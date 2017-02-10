@@ -9,11 +9,11 @@ import { BoardComponent } from './components/board/board.component';
 import { MagnetComponent } from './components/magnet/magnet.component';
 
 export const firebaseConfig = {
-  apiKey: '<your-key>',
-  authDomain: '<your-project-authdomain>',
-  databaseURL: '<your-database-URL>',
-  storageBucket: '<your-storage-bucket>',
-  messagingSenderId: '<your-messaging-sender-id>'
+    apiKey: "AIzaSyCcqVCaKizJ-HvqQaHQ86HUlZpdGVGCWPU",
+    authDomain: "interactive-board-999c5.firebaseapp.com",
+    databaseURL: "https://interactive-board-999c5.firebaseio.com",
+    storageBucket: "interactive-board-999c5.appspot.com",
+    messagingSenderId: "131912489396"
 };
 
 @NgModule({
