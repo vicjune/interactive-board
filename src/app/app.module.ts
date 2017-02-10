@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { AngularFireModule } from 'angularfire2';
 
 import { AppComponent } from './app.component';
+import { FirebaseService } from './services/firebase.service'
 import { BoardComponent } from './components/board/board.component';
 import { MagnetComponent } from './components/magnet/magnet.component';
 
@@ -28,7 +29,9 @@ export const firebaseConfig = {
         HttpModule,
         AngularFireModule.initializeApp(firebaseConfig)
     ],
-    providers: [],
+    providers: [
+        FirebaseService
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
