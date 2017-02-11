@@ -2,7 +2,13 @@
     position: absolute;
     height: 100px;
     width: 100px;
-    background-color: blue;
     color: white;
+}
+
+.magnet:not(.ready) {
+    display: none;
+}
+
+.magnet:not(.dragging) {
     transition: top 1s, left 1s;
 }

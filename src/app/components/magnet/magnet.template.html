@@ -1,4 +1,4 @@
-<div class="magnet" [ngStyle]="{'left.px': coordinates[0], 'top.px': coordinates[1]}">
+<div class="magnet" [ngClass]="{'dragging': status.drag, 'ready': status.ready}" [ngStyle]="{'left.px': coordinates[0], 'top.px': coordinates[1], 'background-color': color}" (mousedown)="mouseDown($event)" (mousemove)="mouseMove($event)" (mouseup)="mouseUp()" (mouseleave)="mouseUp()">
     <div>Id: {{id}}</div>
     <div>{{coordinates[0]}} {{coordinates[1]}}</div>
 </div>
