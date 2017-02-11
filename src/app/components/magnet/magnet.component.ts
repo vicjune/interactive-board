@@ -37,6 +37,7 @@ export class MagnetComponent implements OnInit {
     mouseDown(e) {
         this.status.drag = true;
         this.mouseOffset = [e.layerX, e.layerY];
+        this.coordinates = [e.clientX - e.layerX, e.clientY - e.layerY];
     }
 
     mouseMove(e) {
@@ -46,7 +47,9 @@ export class MagnetComponent implements OnInit {
     }
 
     mouseUp() {
-        this.sendCoordinates();
+        if (this.status.drag) {
+            this.sendCoordinates();
+        }
     }
 
     private updateCoordinates(firebaseObject: any) {
