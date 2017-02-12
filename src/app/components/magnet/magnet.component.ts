@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { Input } from '@angular/core';
 
-import { FirebaseService } from './../../services/firebase.service'
+import { FirebaseService } from './../../services/firebase.service';
+import { Constants } from './../../constants';
 
 @Component({
     selector: 'magnet',
@@ -16,6 +17,10 @@ export class MagnetComponent implements OnInit {
 
     coordinates: number[] = [0, 0];
     mouseOffset: number[] = [0, 0];
+    svg = {
+        path: '',
+        viewBox: ''
+    };
     status = {
         drag: false,
         ready: false,
@@ -25,8 +30,10 @@ export class MagnetComponent implements OnInit {
     @Input() id: number;
     @Input() type: string;
 
-
     ngOnInit () {
+        this.svg.path = Constants.SVG[this.type].PATH;
+        this.svg.viewBox = Constants.SVG[this.type].VIEW_BOX.join(' ');
+
         this.FirebaseService.bindObject(this.id).subscribe(
             firebaseObject => {
                 this.updateCoordinates(firebaseObject);
