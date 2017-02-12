@@ -18,10 +18,12 @@ export class MagnetComponent implements OnInit {
     mouseOffset: number[] = [0, 0];
     status = {
         drag: false,
-        ready: false
+        ready: false,
+        loading: false
     };
     @Input() color: string;
     @Input() id: number;
+    @Input() type: string;
 
 
     ngOnInit () {
@@ -35,9 +37,11 @@ export class MagnetComponent implements OnInit {
     }
 
     mouseDown(e) {
-        this.status.drag = true;
-        this.mouseOffset = [e.layerX, e.layerY];
-        this.coordinates = [e.clientX - e.layerX, e.clientY - e.layerY];
+        if (!this.status.drag && !this.status.loading) {
+            this.status.drag = true;
+            this.mouseOffset = [e.layerX, e.layerY];
+            this.coordinates = [e.clientX - e.layerX, e.clientY - e.layerY];
+        }
     }
 
     mouseMove(e) {
@@ -48,26 +52,28 @@ export class MagnetComponent implements OnInit {
 
     mouseUp() {
         if (this.status.drag) {
+            this.status.drag = false;
             this.sendCoordinates();
         }
     }
 
     private updateCoordinates(firebaseObject: any) {
-        if (!this.status.drag) {
+        if (!this.status.drag && !this.status.loading) {
             this.coordinates[0] = firebaseObject.x;
             this.coordinates[1] = firebaseObject.y;
         }
     }
 
     private sendCoordinates() {
+        this.status.loading = true;
         this.FirebaseService.setCoordinates(this.id, this.coordinates).subscribe(
             null,
             error => {
                 console.error(error);
-                this.status.drag = false;
+                this.status.loading = false;
             },
             () => {
-                this.status.drag = false;
+                this.status.loading = false;
             }
         );
     }
