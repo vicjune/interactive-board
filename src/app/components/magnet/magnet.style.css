@@ -1,7 +1,5 @@
 .magnet {
     position: absolute;
-    height: 100px;
-    width: 100px;
     transition: top 1s, left 1s, opacity 0.2s;
     cursor: pointer;
 }
@@ -35,11 +33,6 @@
 .magnet.loading {
     opacity: 0.6;
     transition: opacity 0.5s ease 0.5s;
-}
-
-g {
-    height: 80px;
-    width: 80px;
 }
 
 .path {

@@ -19,7 +19,9 @@ export class MagnetComponent implements OnInit {
     mouseOffset: number[] = [0, 0];
     svg = {
         path: '',
-        viewBox: ''
+        viewBox: '',
+        width: 0,
+        height: 0
     };
     status = {
         drag: false,
@@ -32,7 +34,9 @@ export class MagnetComponent implements OnInit {
 
     ngOnInit () {
         this.svg.path = Constants.SVG[this.type].PATH;
-        this.svg.viewBox = Constants.SVG[this.type].VIEW_BOX.join(' ');
+        this.svg.viewBox = Math.floor(Constants.SVG[this.type].VIEW_BOX[0] * -0.1 + 1) + ' ' + Math.floor(Constants.SVG[this.type].VIEW_BOX[1] * -0.1 + 1) + ' ' + Constants.SVG[this.type].VIEW_BOX.join(' ')
+        this.svg.width = Constants.SVG[this.type].WIDTH ? Constants.SVG[this.type].WIDTH : Constants.SVG[this.type].VIEW_BOX[0];
+        this.svg.height = Constants.SVG[this.type].HEIGHT ? Constants.SVG[this.type].HEIGHT : Constants.SVG[this.type].VIEW_BOX[1];
 
         this.FirebaseService.bindObject(this.id).subscribe(
             firebaseObject => {
