@@ -6,9 +6,15 @@ import { Magnet } from './../../classes/magnet';
     templateUrl: './board.template.html',
     styleUrls: ['./board.style.css']
 })
-export class BoardComponent implements OnInit{
+export class BoardComponent implements OnInit {
     event: MouseEvent;
     magnets: Magnet[] = [];
+    rectangle = {
+        top: 50,
+        left: 50,
+        right: 1050,
+        bottom: 1050
+    }
 
     ngOnInit() {
         // for each magnet in Firebase do:

@@ -1,6 +1,7 @@
 <div class="board"
+[ngStyle]="{'height.px': rectangle.bottom - rectangle.top, 'width.px': rectangle.right - rectangle.left, 'margin-top.px': rectangle.top, 'margin-left.px': rectangle.left}"
 (mousemove)="catchEvent($event)"
 (mouseup)="catchEvent($event)"
 (mouseleave)="catchEvent($event)">
-    <magnet *ngFor="let magnet of magnets" [magnet]="magnet" [eventCatched]="event"></magnet>
+    <magnet *ngFor="let magnet of magnets" [magnet]="magnet" [eventCatched]="event" [boardRectangle]="rectangle"></magnet>
 </div>

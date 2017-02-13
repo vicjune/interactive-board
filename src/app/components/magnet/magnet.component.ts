@@ -28,6 +28,7 @@ export class MagnetComponent implements OnInit, OnChanges {
         loading: false
     };
     @Input() magnet: Magnet;
+    @Input() boardRectangle;
     @Input() eventCatched: MouseEvent;
 
     ngOnChanges(changes) {
@@ -61,13 +62,17 @@ export class MagnetComponent implements OnInit, OnChanges {
         if (!this.status.drag && !this.status.loading) {
             this.status.drag = true;
             this.mouseOffset = [e.layerX, e.layerY];
-            this.coordinates = [e.clientX - e.layerX, e.clientY - e.layerY];
+            this.coordinates = [e.pageX - e.layerX, e.pageY - e.layerY];
         }
     }
 
     mouseMove(e) {
         if (this.status.drag) {
-            this.coordinates = [e.clientX - this.mouseOffset[0], e.clientY - this.mouseOffset[1]];
+            let x = e.pageX - this.mouseOffset[0];
+            let y = e.pageY - this.mouseOffset[1];
+            if (x > this.boardRectangle.left && x + this.svg.width < this.boardRectangle.right && y > this.boardRectangle.top && y + this.svg.height < this.boardRectangle.bottom) {
+                this.coordinates = [x, y];
+            }
         }
     }
 
