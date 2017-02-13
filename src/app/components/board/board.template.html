@@ -1,4 +1,6 @@
-<magnet [id]="0" [color]="'blue'" [type]="'A'"></magnet>
-<magnet [id]="1" [color]="'red'" [type]="'B'"></magnet>
-<magnet [id]="2" [color]="'green'" [type]="'C'"></magnet>
-<magnet [id]="3" [color]="'purple'" [type]="'I'"></magnet>
+<div class="board"
+(mousemove)="catchEvent($event)"
+(mouseup)="catchEvent($event)"
+(mouseleave)="catchEvent($event)">
+    <magnet *ngFor="let magnet of magnets" [magnet]="magnet" [eventCatched]="event"></magnet>
+</div>

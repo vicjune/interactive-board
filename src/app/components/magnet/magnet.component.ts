@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
+import { Magnet } from './../../classes/magnet';
 import { Constants } from './../../constants';
 
 @Component({
@@ -10,7 +9,7 @@ import { Constants } from './../../constants';
     templateUrl: './magnet.template.html',
     styleUrls: ['./magnet.style.css']
 })
-export class MagnetComponent implements OnInit {
+export class MagnetComponent implements OnInit, OnChanges {
     constructor (
         private FirebaseService: FirebaseService
     ) {}
@@ -28,17 +27,28 @@ export class MagnetComponent implements OnInit {
         ready: false,
         loading: false
     };
-    @Input() color: string;
-    @Input() id: number;
-    @Input() type: string;
+    @Input() magnet: Magnet;
+    @Input() eventCatched: MouseEvent;
 
-    ngOnInit () {
-        this.svg.path = Constants.SVG[this.type].PATH;
-        this.svg.viewBox = Math.floor(Constants.SVG[this.type].VIEW_BOX[0] * -0.1 + 1) + ' ' + Math.floor(Constants.SVG[this.type].VIEW_BOX[1] * -0.1 + 1) + ' ' + Constants.SVG[this.type].VIEW_BOX.join(' ');
-        this.svg.width = Constants.SVG[this.type].WIDTH ? Constants.SVG[this.type].WIDTH : Constants.SVG[this.type].VIEW_BOX[0];
-        this.svg.height = Constants.SVG[this.type].HEIGHT ? Constants.SVG[this.type].HEIGHT : Constants.SVG[this.type].VIEW_BOX[1];
+    ngOnChanges(changes) {
+        if (changes.eventCatched && changes.eventCatched.currentValue !== undefined) {
+            let eventType = changes.eventCatched.currentValue.type;
+            if (eventType === 'mousemove') {
+                this.mouseMove(changes.eventCatched.currentValue);
+            }
+            if (eventType === 'mouseleave' || eventType === 'mouseup') {
+                this.mouseUp();
+            }
+        }
+    }
 
-        this.FirebaseService.bindObject(this.id).subscribe(
+    ngOnInit() {
+        this.svg.path = Constants.SVG[this.magnet.type].PATH;
+        this.svg.viewBox = Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[0] * -0.1 + 1) + ' ' + Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[1] * -0.1 + 1) + ' ' + Constants.SVG[this.magnet.type].VIEW_BOX.join(' ');
+        this.svg.width = Constants.SVG[this.magnet.type].WIDTH ? Constants.SVG[this.magnet.type].WIDTH : Constants.SVG[this.magnet.type].VIEW_BOX[0];
+        this.svg.height = Constants.SVG[this.magnet.type].HEIGHT ? Constants.SVG[this.magnet.type].HEIGHT : Constants.SVG[this.magnet.type].VIEW_BOX[1];
+
+        this.FirebaseService.bindObject(this.magnet.id).subscribe(
             firebaseObject => {
                 this.updateCoordinates(firebaseObject);
                 this.status.ready = true;
@@ -77,7 +87,7 @@ export class MagnetComponent implements OnInit {
 
     private sendCoordinates() {
         this.status.loading = true;
-        this.FirebaseService.setCoordinates(this.id, this.coordinates).subscribe(
+        this.FirebaseService.setCoordinates(this.magnet.id, this.coordinates).subscribe(
             null,
             error => {
                 console.error(error);

@@ -2,11 +2,8 @@
 [ngClass]="{'dragging': status.drag, 'ready': status.ready, 'loading': status.loading}"
 [attr.viewBox]="svg.viewBox"
 [ngStyle]="{'left.px': coordinates[0], 'top.px': coordinates[1], 'width.px': svg.width, 'height.px': svg.height}"
-(mousedown)="mouseDown($event)"
-(mousemove)="mouseMove($event)"
-(mouseup)="mouseUp()"
-(mouseleave)="mouseUp()">
-    <svg:filter id="dropshadow{{id}}" height="130%" width="130%">
+(mousedown)="mouseDown($event)">
+    <svg:filter id="dropshadow{{magnet.id}}" height="130%" width="130%">
       <svg:feGaussianBlur in="SourceAlpha" [attr.stdDeviation]="status.drag ? 3 : 1"/>
       <svg:feOffset [attr.dx]="status.drag ? 3 : 1" [attr.dy]="status.drag ? 3 : 1" result="offsetblur"/>
       <svg:feMerge>
@@ -14,5 +11,5 @@
         <svg:feMergeNode in="SourceGraphic"/>
       </svg:feMerge>
     </svg:filter>
-    <svg:path class="path" [ngStyle]="{'fill': color, 'filter': 'url(#dropshadow' + id + ')'}" [attr.d]="svg.path"/>
+    <svg:path class="path" [ngStyle]="{'fill': magnet.color, 'filter': 'url(#dropshadow' + magnet.id + ')'}" [attr.d]="svg.path"/>
 </svg>
