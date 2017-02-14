@@ -18,7 +18,8 @@ export class FirebaseService {
         return new Observable(observer => {
             this.bindObject(id).update({
                 x: coordinates[0],
-                y: coordinates[1]
+                y: coordinates[1],
+                timestamp: + new Date
             }).then( () => {
                 observer.complete();
             }).catch(error => observer.error(error));
