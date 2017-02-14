@@ -70,7 +70,7 @@ export class MagnetComponent implements OnInit, OnChanges {
         if (this.status.drag) {
             let x = this.toPercentage(e.pageX - this.mouseOffset[0] - this.board.left, 'x');
             let y = this.toPercentage(e.pageY - this.mouseOffset[1] - this.board.top, 'y');
-            if (x > 0 && x + this.toPercentage(this.svg.width, 'x') < 100 && y > 0 && y + this.toPercentage(this.svg.height, 'y') < 100) {
+            if (x > 0 && x + this.svg.width < 100 && y > 0 && y + this.svg.height < 100) {
                 this.coordinates = [x, y];
             }
         }
