@@ -4,19 +4,6 @@
     cursor: pointer;
 }
 
-.magnet:after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
 .magnet:not(.ready) {
     display: none;
 }
@@ -24,10 +11,6 @@
 .magnet.dragging {
     transition: none;
     z-index: 1;
-}
-
-.magnet.dragging:after {
-    opacity: 1;
 }
 
 .magnet.loading {

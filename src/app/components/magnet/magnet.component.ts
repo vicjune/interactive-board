@@ -28,7 +28,7 @@ export class MagnetComponent implements OnInit, OnChanges {
         loading: false
     };
     @Input() magnet: Magnet;
-    @Input() boardRectangle;
+    @Input() board;
     @Input() eventCatched: MouseEvent;
 
     ngOnChanges(changes) {
@@ -46,8 +46,8 @@ export class MagnetComponent implements OnInit, OnChanges {
     ngOnInit() {
         this.svg.path = Constants.SVG[this.magnet.type].PATH;
         this.svg.viewBox = Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[0] * -0.1 + 1) + ' ' + Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[1] * -0.1 + 1) + ' ' + Constants.SVG[this.magnet.type].VIEW_BOX.join(' ');
-        this.svg.width = Constants.SVG[this.magnet.type].WIDTH ? Constants.SVG[this.magnet.type].WIDTH : Constants.SVG[this.magnet.type].VIEW_BOX[0];
-        this.svg.height = Constants.SVG[this.magnet.type].HEIGHT ? Constants.SVG[this.magnet.type].HEIGHT : Constants.SVG[this.magnet.type].VIEW_BOX[1];
+        this.svg.width = Constants.SVG[this.magnet.type].WIDTH ? Constants.SVG[this.magnet.type].WIDTH/10 : Constants.SVG[this.magnet.type].VIEW_BOX[0]/10;
+        this.svg.height = Constants.SVG[this.magnet.type].HEIGHT ? Constants.SVG[this.magnet.type].HEIGHT/10 : Constants.SVG[this.magnet.type].VIEW_BOX[1]/10;
 
         this.FirebaseService.bindObject(this.magnet.id).subscribe(
             firebaseObject => {
@@ -61,16 +61,16 @@ export class MagnetComponent implements OnInit, OnChanges {
     mouseDown(e) {
         if (!this.status.drag && !this.status.loading) {
             this.status.drag = true;
-            this.mouseOffset = [e.layerX, e.layerY];
-            this.coordinates = [e.pageX - e.layerX, e.pageY - e.layerY];
+            this.mouseOffset = [e.offsetX, e.offsetY];
+            this.coordinates = [this.toPercentage(e.pageX - e.offsetX - this.board.left, 'x'), this.toPercentage(e.pageY - e.offsetY - this.board.top, 'y')];
         }
     }
 
     mouseMove(e) {
         if (this.status.drag) {
-            let x = e.pageX - this.mouseOffset[0];
-            let y = e.pageY - this.mouseOffset[1];
-            if (x > this.boardRectangle.left && x + this.svg.width < this.boardRectangle.right && y > this.boardRectangle.top && y + this.svg.height < this.boardRectangle.bottom) {
+            let x = this.toPercentage(e.pageX - this.mouseOffset[0] - this.board.left, 'x');
+            let y = this.toPercentage(e.pageY - this.mouseOffset[1] - this.board.top, 'y');
+            if (x > 0 && x + this.toPercentage(this.svg.width, 'x') < 100 && y > 0 && y + this.toPercentage(this.svg.height, 'y') < 100) {
                 this.coordinates = [x, y];
             }
         }
@@ -102,5 +102,15 @@ export class MagnetComponent implements OnInit, OnChanges {
                 this.status.loading = false;
             }
         );
+    }
+
+    private toPercentage(value: number, direction: string): number {
+        if (direction === 'x') {
+            return value * 100 / (this.board.right - this.board.left);
+        } else if (direction === 'y') {
+            return value * 100 / (this.board.bottom - this.board.top);
+        } else {
+            return value;
+        }
     }
 }

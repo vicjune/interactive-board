@@ -1,7 +1,7 @@
 <svg class="magnet"
 [ngClass]="{'dragging': status.drag, 'ready': status.ready, 'loading': status.loading}"
 [attr.viewBox]="svg.viewBox"
-[ngStyle]="{'left.px': coordinates[0], 'top.px': coordinates[1], 'width.px': svg.width, 'height.px': svg.height}"
+[ngStyle]="{'left.%': coordinates[0], 'top.%': coordinates[1], 'width.%': svg.width, 'height.%': svg.height}"
 (mousedown)="mouseDown($event)">
     <svg:filter id="dropshadow{{magnet.id}}" height="130%" width="130%">
       <svg:feGaussianBlur in="SourceAlpha" [attr.stdDeviation]="status.drag ? 3 : 1"/>

@@ -1,4 +1,15 @@
 .board {
-    border: 2px solid grey;
+    position: relative;
     border-radius: 5px;
+    height: calc(100vh - 20px);
+    width: calc(125vh - 20px);
+    margin: 10px;
+    background-color: rgba(240, 240, 240, 1);
+}
+
+@media (orientation:portrait) {
+    .board {
+        height: calc(80vw - 20px);
+        width: calc(100vw - 20px);
+    }
 }
