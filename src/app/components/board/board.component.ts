@@ -1,4 +1,6 @@
 import { Component, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
+
+import { FirebaseService } from './../../services/firebase.service';
 import { Magnet } from './../../classes/magnet';
 
 @Component({
@@ -7,19 +9,40 @@ import { Magnet } from './../../classes/magnet';
     styleUrls: ['./board.style.css']
 })
 export class BoardComponent implements OnInit {
+    constructor(
+        private FirebaseService: FirebaseService
+    ) {}
     event: MouseEvent;
     magnets: Magnet[] = [];
     rectangle;
     @ViewChild('board') board;
 
     ngOnInit() {
-        // for each magnet in Firebase do:
-        this.magnets.push(new Magnet(0, 'A', 'blue'));
-        this.magnets.push(new Magnet(1, 'B', 'red'));
-        this.magnets.push(new Magnet(2, 'C', 'green'));
-        this.magnets.push(new Magnet(3, 'I', 'purple'));
+        // TODO SERVER SIDE
+        // this.FirebaseService.addMagnet('I', 'purple').subscribe(
+        //     null,
+        //     error => {
+        //         console.error(error);
+        //     },
+        //     () => {
+        //         console.log('ok');
+        //     }
+        // );
 
         this.buildRectangle();
+
+        this.FirebaseService.bindList().subscribe(
+            firebaseList => {
+                this.magnets = firebaseList.map((item) => {
+                    return {
+                        id: item.$key,
+                        color: item.color,
+                        type: item.type
+                    }
+                });
+            },
+            error => console.error(error)
+        );
     }
 
     onResize() {

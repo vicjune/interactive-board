@@ -10,7 +10,7 @@ import { Constants } from './../../constants';
     styleUrls: ['./magnet.style.css']
 })
 export class MagnetComponent implements OnInit, OnChanges {
-    constructor (
+    constructor(
         private FirebaseService: FirebaseService
     ) {}
 
@@ -85,8 +85,8 @@ export class MagnetComponent implements OnInit, OnChanges {
 
     private updateCoordinates(firebaseObject: any) {
         if (!this.status.drag && !this.status.loading) {
-            this.coordinates[0] = firebaseObject.x;
-            this.coordinates[1] = firebaseObject.y;
+            this.coordinates[0] = firebaseObject.x ? firebaseObject.x : 0;
+            this.coordinates[1] = firebaseObject.y ? firebaseObject.y : 0;
         }
     }
 
