@@ -6,6 +6,7 @@
             <button class="letterItem"
             *ngFor="let letter of letters"
             [ngClass]="{'selected': letter.selected, 'voted': letter.voted}"
+            [disabled]="!state.ready || state.letterSelected || letter.voted"
             (click)="selectLetter(letter)">
             {{ letter.type }}</button>
         </div>
