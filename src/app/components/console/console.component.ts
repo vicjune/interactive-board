@@ -86,6 +86,14 @@ export class ConsoleComponent implements OnInit {
         } else {
             this.ErrorService.input('letter-selected');
         }
+
+        // TODO SERVER SIDE
+        this.FirebaseService.addMagnet(letter.type, 'red')
+        .then( () => {
+            console.log('ok');
+        }).catch( error => {
+            console.error(error);
+        });
     }
 
     private reset() {

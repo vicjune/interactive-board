@@ -20,14 +20,6 @@ export class BoardComponent implements OnInit {
     @ViewChild('board') board;
 
     ngOnInit() {
-        // TODO SERVER SIDE
-        // this.FirebaseService.addMagnet('I', 'purple')
-        // .then( () => {
-        //     console.log('ok');
-        // }).catch( error => {
-        //     console.error(error);
-        // });
-
         this.buildRectangle();
 
         this.FirebaseService.bindMagnetList().subscribe(
