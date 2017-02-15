@@ -14,7 +14,7 @@ export class ErrorService {
             message = 'You already voted for a letter, wait for the next turn';
         }
         if (errorMessage === 'letter-voted') {
-            message = 'This letter has already been voted for in this turn';
+            message = 'This letter has already been voted for';
         }
         if (error) {
             console.error(error);

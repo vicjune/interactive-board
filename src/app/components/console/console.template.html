@@ -1,21 +1,24 @@
 <div class="console">
-    <div class="error" *ngIf="error.display">{{ error.message }}</div>
+    <div class="error" [ngClass]="{'displayed': error.display}">{{ error.message }}</div>
     <div class="consoleContent" *ngIf="serverStatus">
-        <div class="voteMessage" *ngIf="!state.letterSelected">Vote for the next letter to appear</div>
         <div class="lettersList">
+            <div class="voteMessage">Vote for the next letter to appear</div>
             <button class="letterItem"
             *ngFor="let letter of letters"
             [ngClass]="{'selected': letter.selected, 'voted': letter.voted}"
-            [disabled]="!state.ready || state.letterSelected || letter.voted"
+            [disabled]="!state.ready || state.letterSelected"
             (click)="selectLetter(letter)">
-            {{ letter.type }}</button>
+                {{ letter.type }}
+            </button>
         </div>
         <div class="nextRound">
-            <span *ngIf="state.timeLeft > 0">New letter in {{ state.timeLeft }}s</span>
-            <span *ngIf="state.timeLeft <= 0">New letter coming up...</span>
-        </div>
-        <div class="percentage" *ngIf="state.percetage <= 100">
-            {{ state.percentage }}
+            <div class="nextRoundMessage">
+                <span *ngIf="state.timeLeft > 0">Next letter in</span>
+                <span *ngIf="state.timeLeft <= 0">New letter coming up...</span>
+            </div>
+            <div class="percentage" [ngStyle]="{'background-image': state.percentageDisplay}" *ngIf="state.timeLeft > 0">
+                <div class="percentageTimeLeft">{{ state.timeLeft }}</div>
+            </div>
         </div>
     </div>
 </div>

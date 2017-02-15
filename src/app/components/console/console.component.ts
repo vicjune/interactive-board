@@ -22,7 +22,7 @@ export class ConsoleComponent implements OnInit {
         ready: false,
         letterSelected: false,
         timeLeft: 0,
-        percentageLeft: 0,
+        percentageDisplay: '',
         interval: null
     }
     error = {
@@ -30,6 +30,8 @@ export class ConsoleComponent implements OnInit {
         message: '',
         timeout: null
     }
+
+    percent: number = 0;
 
     ngOnInit() {
         for (let i = 0; i < Constants.LETTERS.length; ++i) {
@@ -88,12 +90,12 @@ export class ConsoleComponent implements OnInit {
         }
 
         // TODO SERVER SIDE
-        this.FirebaseService.addMagnet(letter.type, 'red')
-        .then( () => {
-            console.log('ok');
-        }).catch( error => {
-            console.error(error);
-        });
+        // this.FirebaseService.addMagnet(letter.type, 'red')
+        // .then( () => {
+        //     console.log('ok');
+        // }).catch( error => {
+        //     console.error(error);
+        // });
     }
 
     private reset() {
@@ -101,14 +103,18 @@ export class ConsoleComponent implements OnInit {
     }
 
     private setTimer() {
-        let now;
         if (this.state.interval) {
             clearInterval(this.state.interval);
         }
         this.state.interval = setInterval(() => {
-            now = + new Date;
+            let now = + new Date;
             this.state.timeLeft = Math.floor((this.serverStatus.nextDraw - now) / 1000);
-            this.state.percentageLeft = Math.floor((this.serverStatus.nextDraw - now) / (this.serverStatus.nextDraw - this.serverStatus.lastDraw) * 100 );
+            let percentage = Math.floor((this.serverStatus.nextDraw - now) / (this.serverStatus.nextDraw - this.serverStatus.lastDraw) * 100 );
+            if (percentage <= 50) {
+                this.state.percentageDisplay = 'linear-gradient(90deg, rgba(250, 250, 250, 1) 50%, transparent 50%, transparent), linear-gradient(' + (360 * percentage / 100 + 90) + 'deg, #4c91ff 50%, rgba(250, 250, 250, 1) 50%, rgba(250, 250, 250, 1))';
+            } else {
+                this.state.percentageDisplay = 'linear-gradient(' + (360 * percentage / 100 - 270) + 'deg, #4c91ff 50%, transparent 50%, transparent), linear-gradient(270deg, #4c91ff 50%, rgba(250, 250, 250, 1) 50%, rgba(250, 250, 250, 1))';
+            }
         }, 1000);
     }
 
@@ -126,6 +132,6 @@ export class ConsoleComponent implements OnInit {
 
         this.error.timeout = setTimeout(() => {
             this.error.display = false;
-        }, 2000);
+        }, 3000);
     }
 }
