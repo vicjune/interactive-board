@@ -27,7 +27,8 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
     status = {
         drag: false,
         ready: false,
-        loading: false
+        loading: false,
+        dying: false
     };
     @Input() magnet: Magnet;
     @Input() board;
@@ -44,6 +45,7 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
         this.subscription = this.FirebaseService.bindMagnetObject(this.magnet.id).subscribe(
             firebaseObject => {
                 this.updateCoordinates(firebaseObject);
+                this.status.dying = firebaseObject.dying ? firebaseObject.dying : false;
                 this.status.ready = true;
             },
             error => this.ErrorService.input('connection', error)
