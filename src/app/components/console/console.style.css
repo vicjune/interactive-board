@@ -2,3 +2,11 @@
     height: 100%;
     width: 100%;
 }
+
+.letterItem.voted {
+    color: red;
+}
+
+.letterItem.selected {
+    color: green;
+}

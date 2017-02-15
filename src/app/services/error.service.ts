@@ -5,12 +5,20 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 export class ErrorService {
     private subject = new ReplaySubject<string>(1);
 
-    input(error, errorMessage = '') {
+    input(errorMessage = '', error = null) {
         let message = 'An error occured, sorry :/';
         if (errorMessage === 'connection') {
             message = 'Oops! A connection issue occured :/';
         }
-        console.error(error);
+        if (errorMessage === 'letter-selected') {
+            message = 'You already voted for a letter, wait for the next turn';
+        }
+        if (errorMessage === 'letter-voted') {
+            message = 'This letter has already been voted for in this turn';
+        }
+        if (error) {
+            console.error(error);
+        }
         this.subject.next(message);
     }
 

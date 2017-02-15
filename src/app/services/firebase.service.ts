@@ -5,6 +5,10 @@ import { AngularFire, FirebaseObjectObservable, FirebaseListObservable } from 'a
 export class FirebaseService {
     constructor (private af: AngularFire) {}
 
+    bindStatusObject(): FirebaseObjectObservable<any>{
+        return this.af.database.object('/status');
+    }
+
     bindMagnetList(): FirebaseListObservable<any>{
         return this.af.database.list('/magnets');
     }
@@ -18,6 +22,16 @@ export class FirebaseService {
             x: coordinates[0],
             y: coordinates[1],
             timestamp: + new Date
+        });
+    }
+
+    bindLetterList(): FirebaseListObservable<any>{
+        return this.af.database.list('/letters');
+    }
+
+    addLetter(type: string) {
+        return this.bindLetterList().push({
+            type: type
         });
     }
 

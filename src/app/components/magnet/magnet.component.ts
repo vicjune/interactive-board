@@ -46,7 +46,7 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
                 this.updateCoordinates(firebaseObject);
                 this.status.ready = true;
             },
-            error => this.ErrorService.input(error, 'connection')
+            error => this.ErrorService.input('connection', error)
         );
     }
 
@@ -103,10 +103,9 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
         this.FirebaseService.setCoordinates(this.magnet.id, this.coordinates)
         .then( () => {
             this.status.loading = false;
-            this.ErrorService.input('', 'connection'); //TO REMOVE
         }).catch( error => {
             this.status.loading = false;
-            this.ErrorService.input(error, 'connection');
+            this.ErrorService.input('connection', error);
         });
     }
 

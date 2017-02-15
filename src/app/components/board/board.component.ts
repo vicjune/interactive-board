@@ -40,7 +40,7 @@ export class BoardComponent implements OnInit {
                     }
                 });
             },
-            error => this.ErrorService.input(error, 'connection');
+            error => this.ErrorService.input('connection', error)
         );
     }
 

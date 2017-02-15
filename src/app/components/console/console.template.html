@@ -1,7 +1,21 @@
 <div class="console">
     <div class="error" *ngIf="error.display">{{ error.message }}</div>
-    <div class="voteMessage">Vote for the next letter to appear</div>
-    <div class="lettersList">
-        <div class="letterItem">a</div>
+    <div class="consoleContent" *ngIf="serverStatus">
+        <div class="voteMessage" *ngIf="!state.letterSelected">Vote for the next letter to appear</div>
+        <div class="lettersList">
+            <button class="letterItem"
+            *ngFor="let letter of letters"
+            [ngClass]="{'selected': letter.selected, 'voted': letter.voted}"
+            [disabled]="!state.ready || state.letterSelected || letter.voted"
+            (click)="selectLetter(letter)">
+            {{ letter.type }}</button>
+        </div>
+        <div class="nextRound">
+            <span *ngIf="state.timeLeft > 0">New letter in {{ state.timeLeft }}s</span>
+            <span *ngIf="state.timeLeft <= 0">New letter coming up...</span>
+        </div>
+        <div class="percentage" *ngIf="state.percetage <= 100">
+            {{ state.percentage }}
+        </div>
     </div>
 </div>
