@@ -1,0 +1,9 @@
+main {
+    display: flex;
+}
+
+console {
+    flex-basis: auto;
+    flex-shrink: 1;
+    flex-grow: 1;
+}

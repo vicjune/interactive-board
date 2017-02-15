@@ -6,7 +6,9 @@ import { AngularFireModule } from 'angularfire2';
 
 import { AppComponent } from './app.component';
 import { FirebaseService } from './services/firebase.service'
+import { ErrorService } from './services/error.service'
 import { BoardComponent } from './components/board/board.component';
+import { ConsoleComponent } from './components/console/console.component';
 import { MagnetComponent } from './components/magnet/magnet.component';
 
 export const firebaseConfig = {
@@ -21,7 +23,8 @@ export const firebaseConfig = {
     declarations: [
         AppComponent,
         BoardComponent,
-        MagnetComponent
+        MagnetComponent,
+        ConsoleComponent
     ],
     imports: [
         BrowserModule,
@@ -30,7 +33,8 @@ export const firebaseConfig = {
         AngularFireModule.initializeApp(firebaseConfig)
     ],
     providers: [
-        FirebaseService
+        FirebaseService,
+        ErrorService
     ],
     bootstrap: [AppComponent]
 })

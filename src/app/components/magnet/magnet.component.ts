@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, OnDestroy } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
+import { ErrorService } from './../../services/error.service';
 import { Magnet } from './../../classes/magnet';
 import { Constants } from './../../constants';
 
@@ -9,9 +10,10 @@ import { Constants } from './../../constants';
     templateUrl: './magnet.template.html',
     styleUrls: ['./magnet.style.css']
 })
-export class MagnetComponent implements OnInit, OnChanges {
+export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
     constructor(
-        private FirebaseService: FirebaseService
+        private FirebaseService: FirebaseService,
+        private ErrorService: ErrorService
     ) {}
 
     coordinates: number[] = [0, 0];
@@ -31,6 +33,27 @@ export class MagnetComponent implements OnInit, OnChanges {
     @Input() board;
     @Input() eventCatched: MouseEvent;
 
+    private subscription;
+
+    ngOnInit() {
+        this.svg.path = Constants.SVG[this.magnet.type].PATH;
+        this.svg.viewBox = Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[0] * -0.1 + 1) + ' ' + Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[1] * -0.1 + 1) + ' ' + Constants.SVG[this.magnet.type].VIEW_BOX.join(' ');
+        this.svg.width = Constants.SVG[this.magnet.type].WIDTH ? Constants.SVG[this.magnet.type].WIDTH/10 : Constants.SVG[this.magnet.type].VIEW_BOX[0]/10;
+        this.svg.height = Constants.SVG[this.magnet.type].HEIGHT ? Constants.SVG[this.magnet.type].HEIGHT/10 : Constants.SVG[this.magnet.type].VIEW_BOX[1]/10;
+
+        this.subscription = this.FirebaseService.bindMagnetObject(this.magnet.id).subscribe(
+            firebaseObject => {
+                this.updateCoordinates(firebaseObject);
+                this.status.ready = true;
+            },
+            error => this.ErrorService.input(error, 'connection')
+        );
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
     ngOnChanges(changes) {
         if (changes.eventCatched && changes.eventCatched.currentValue !== undefined) {
             let eventType = changes.eventCatched.currentValue.type;
@@ -41,21 +64,6 @@ export class MagnetComponent implements OnInit, OnChanges {
                 this.mouseUp();
             }
         }
-    }
-
-    ngOnInit() {
-        this.svg.path = Constants.SVG[this.magnet.type].PATH;
-        this.svg.viewBox = Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[0] * -0.1 + 1) + ' ' + Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[1] * -0.1 + 1) + ' ' + Constants.SVG[this.magnet.type].VIEW_BOX.join(' ');
-        this.svg.width = Constants.SVG[this.magnet.type].WIDTH ? Constants.SVG[this.magnet.type].WIDTH/10 : Constants.SVG[this.magnet.type].VIEW_BOX[0]/10;
-        this.svg.height = Constants.SVG[this.magnet.type].HEIGHT ? Constants.SVG[this.magnet.type].HEIGHT/10 : Constants.SVG[this.magnet.type].VIEW_BOX[1]/10;
-
-        this.FirebaseService.bindObject(this.magnet.id).subscribe(
-            firebaseObject => {
-                this.updateCoordinates(firebaseObject);
-                this.status.ready = true;
-            },
-            error => console.error(error)
-        );
     }
 
     mouseDown(e) {
@@ -92,16 +100,14 @@ export class MagnetComponent implements OnInit, OnChanges {
 
     private sendCoordinates() {
         this.status.loading = true;
-        this.FirebaseService.setCoordinates(this.magnet.id, this.coordinates).subscribe(
-            null,
-            error => {
-                console.error(error);
-                this.status.loading = false;
-            },
-            () => {
-                this.status.loading = false;
-            }
-        );
+        this.FirebaseService.setCoordinates(this.magnet.id, this.coordinates)
+        .then( () => {
+            this.status.loading = false;
+            this.ErrorService.input('', 'connection'); //TO REMOVE
+        }).catch( error => {
+            this.status.loading = false;
+            this.ErrorService.input(error, 'connection');
+        });
     }
 
     private toPercentage(value: number, direction: string): number {

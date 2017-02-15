@@ -4,7 +4,7 @@
     height: calc(100vh - 20px);
     width: calc(125vh - 20px);
     margin: 10px;
-    background-color: rgba(250, 250, 250, 1);
+    background-color: white;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
