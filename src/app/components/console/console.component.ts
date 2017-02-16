@@ -31,8 +31,6 @@ export class ConsoleComponent implements OnInit {
         timeout: null
     }
 
-    percent: number = 0;
-
     ngOnInit() {
         for (let i = 0; i < Constants.LETTERS.length; ++i) {
             this.letters.push({
