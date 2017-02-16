@@ -10,6 +10,7 @@ import { ErrorService } from './services/error.service'
 import { BoardComponent } from './components/board/board.component';
 import { ConsoleComponent } from './components/console/console.component';
 import { MagnetComponent } from './components/magnet/magnet.component';
+import { TimeLeftPipe } from './pipes/timeLeft.pipe';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyCcqVCaKizJ-HvqQaHQ86HUlZpdGVGCWPU",
@@ -24,7 +25,8 @@ export const firebaseConfig = {
         AppComponent,
         BoardComponent,
         MagnetComponent,
-        ConsoleComponent
+        ConsoleComponent,
+        TimeLeftPipe
     ],
     imports: [
         BrowserModule,

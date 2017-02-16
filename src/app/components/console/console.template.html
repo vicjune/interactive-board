@@ -17,7 +17,7 @@
                 <span *ngIf="state.timeLeft <= 0">New letter coming up...</span>
             </div>
             <div class="percentage" [ngStyle]="{'background-image': state.percentageDisplay}" *ngIf="state.timeLeft > 0">
-                <div class="percentageTimeLeft">{{ state.timeLeft }}</div>
+                <div class="percentageTimeLeft">{{ state.timeLeft | timeLeft }}</div>
             </div>
         </div>
     </div>
