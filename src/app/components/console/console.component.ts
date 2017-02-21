@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
 import { ErrorService } from './../../services/error.service';
-import { Letter } from './../../classes/letter';
+import { Letter } from './../../interfaces/letter';
 import { Constants } from './../../constants';
 
 @Component({
@@ -16,7 +16,7 @@ export class ConsoleComponent implements OnInit {
         private ErrorService: ErrorService
     ) {}
 
-    serverStatus = null;
+    serverStatus;
     letters: Letter[] = [];
     state = {
         ready: false,
@@ -31,7 +31,7 @@ export class ConsoleComponent implements OnInit {
         timeout: null
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         for (let i = 0; i < Constants.LETTERS.length; ++i) {
             this.letters.push({
                 selected: false,
@@ -69,7 +69,7 @@ export class ConsoleComponent implements OnInit {
         );
     }
 
-    selectLetter(letter: Letter) {
+    selectLetter(letter: Letter): void {
         if (this.noLetterSelected()) {
             if (!letter.voted) {
                 this.state.letterSelected = true;
@@ -96,11 +96,11 @@ export class ConsoleComponent implements OnInit {
         // });
     }
 
-    private reset() {
+    private reset(): void {
         this.state.letterSelected = false;
     }
 
-    private setTimer() {
+    private setTimer(): void {
         if (this.state.interval) {
             clearInterval(this.state.interval);
         }
@@ -120,7 +120,7 @@ export class ConsoleComponent implements OnInit {
         return this.letters.every(item => item.selected === false);
     }
 
-    private handleError(message: string) {
+    private handleError(message: string): void {
         this.error.message = message;
         this.error.display = true;
 

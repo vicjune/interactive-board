@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
 import { ErrorService } from './../../services/error.service';
-import { Magnet } from './../../classes/magnet';
+import { Magnet } from './../../interfaces/magnet';
+import { Rectangle } from './../../interfaces/rectangle';
 
 @Component({
     selector: 'board',
@@ -16,10 +17,10 @@ export class BoardComponent implements OnInit {
     ) {}
     event: MouseEvent;
     magnets: Magnet[] = [];
-    rectangle;
-    @ViewChild('board') board;
+    rectangle: Rectangle;
+    @ViewChild('board') board: ElementRef;
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.buildRectangle();
 
         this.FirebaseService.bindMagnetList().subscribe(
@@ -36,15 +37,15 @@ export class BoardComponent implements OnInit {
         );
     }
 
-    onResize() {
+    onResize(): void {
         this.buildRectangle();
     }
 
-    catchEvent = function(e) {
+    catchEvent(e: MouseEvent): void {
         this.event = e;
     }
 
-    private buildRectangle() {
+    private buildRectangle(): void {
         let bouncingRect = this.board.nativeElement.getBoundingClientRect();
         this.rectangle = {
             top: bouncingRect.top + window.scrollY,

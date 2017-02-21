@@ -2,7 +2,8 @@ import { Component, OnInit, Input, OnChanges, OnDestroy } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
 import { ErrorService } from './../../services/error.service';
-import { Magnet } from './../../classes/magnet';
+import { Magnet } from './../../interfaces/magnet';
+import { Rectangle } from './../../interfaces/rectangle';
 import { Constants } from './../../constants';
 
 @Component({
@@ -31,7 +32,7 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
         dying: false
     };
     @Input() magnet: Magnet;
-    @Input() board;
+    @Input() board: Rectangle;
     @Input() eventCatched: MouseEvent;
 
     private subscription;
