@@ -18,6 +18,14 @@ export class BoardComponent implements OnInit {
     event: MouseEvent;
     magnets: Magnet[] = [];
     rectangle: Rectangle;
+    animation = {
+        animate: false,
+        x: 0,
+        y: 0,
+        height: 0,
+        width: 0,
+        color: ''
+    }
     @ViewChild('board') board: ElementRef;
 
     ngOnInit(): void {
@@ -25,13 +33,28 @@ export class BoardComponent implements OnInit {
 
         this.FirebaseService.bindMagnetList().subscribe(
             firebaseList => {
-                this.magnets = firebaseList.map((item) => {
-                    return {
-                        id: item.$key,
-                        color: item.color,
-                        type: item.type
+                for (let firebaseMagnet of firebaseList) {
+                    if (this.magnets.every( magnet => firebaseMagnet.$key !== magnet.id)) {
+                        this.magnets.push({
+                            id: firebaseMagnet.$key,
+                            color: firebaseMagnet.color,
+                            type: firebaseMagnet.type
+                        })
                     }
-                });
+                }
+                if (firebaseList.length < this.magnets.length) {
+                    for (let i = 0; i < this.magnets.length; ++i) {
+                        let isPresent = false;
+                        for (let firebaseMagnet of firebaseList) {
+                            if (this.magnets[i].id === firebaseMagnet.$key) {
+                                isPresent = true;
+                            }
+                        }
+                        if (!isPresent) {
+                            this.magnets.splice(i, 1);
+                        }
+                    }
+                }
             },
             error => this.ErrorService.input('connection', error)
         );
@@ -43,6 +66,18 @@ export class BoardComponent implements OnInit {
 
     catchEvent(e: MouseEvent): void {
         this.event = e;
+    }
+
+    animateDestroy(data): void {
+        this.animation.animate = true;
+        this.animation.x = data.x;
+        this.animation.y = data.y;
+        this.animation.color = data.color;
+        this.animation.width = data.width;
+        this.animation.height = data.height;
+        setTimeout(() => {
+            this.animation.animate = false;
+        }, 1000);
     }
 
     private buildRectangle(): void {

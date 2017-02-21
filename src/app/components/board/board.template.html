@@ -3,5 +3,13 @@
 (mousemove)="catchEvent($event)"
 (mouseup)="catchEvent($event)"
 (mouseleave)="catchEvent($event)">
-    <magnet *ngFor="let magnet of magnets" [magnet]="magnet" [eventCatched]="event" [board]="rectangle"></magnet>
+    <magnet
+    *ngFor="let magnet of magnets"
+    [magnet]="magnet"
+    [eventCatched]="event"
+    [board]="rectangle"
+    (destroy)="animateDestroy($event)"></magnet>
+    <div class="animation"
+    [ngStyle]="{'background-color': animation.color, 'width.%': animation.width, 'height.%': animation.height,'left.%': animation.x, 'top.%': animation.y}"
+    [ngClass]="{'animate': animation.animate}"></div>
 </div>

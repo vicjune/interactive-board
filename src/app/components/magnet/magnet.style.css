@@ -1,11 +1,15 @@
 .magnet {
     position: absolute;
-    transition: top 1s, left 1s, opacity 0.2s;
+    transition: top 1s, left 1s, opacity 1s;
     cursor: pointer;
 }
 
 .magnet:not(.ready) {
     display: none;
+}
+
+.magnet.hidden {
+    opacity: 0;
 }
 
 .magnet.dragging {

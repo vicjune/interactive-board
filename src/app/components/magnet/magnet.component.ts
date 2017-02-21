@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, OnDestroy, EventEmitter, Output } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
 import { ErrorService } from './../../services/error.service';
@@ -28,12 +28,15 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
     status = {
         drag: false,
         ready: false,
+        hidden: true,
         loading: false,
+        firebaseDriven: false,
         dying: false
     };
     @Input() magnet: Magnet;
     @Input() board: Rectangle;
     @Input() eventCatched: MouseEvent;
+    @Output() destroy = new EventEmitter();
 
     private subscription;
 
@@ -48,6 +51,9 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
                 this.updateCoordinates(firebaseObject);
                 this.status.dying = firebaseObject.dying ? firebaseObject.dying : false;
                 this.status.ready = true;
+                setTimeout(() => {
+                    this.status.hidden = false;
+                }, 1000);
             },
             error => this.ErrorService.input('connection', error)
         );
@@ -55,6 +61,13 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
+        this.destroy.emit({
+            x: this.coordinates[0],
+            y: this.coordinates[1],
+            height: this.svg.height,
+            width: this.svg.width,
+            color: this.magnet.color
+        });
     }
 
     ngOnChanges(changes) {
@@ -95,9 +108,13 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     private updateCoordinates(firebaseObject: any) {
-        if (!this.status.drag && !this.status.loading) {
-            this.coordinates[0] = firebaseObject.x ? firebaseObject.x : 0;
-            this.coordinates[1] = firebaseObject.y ? firebaseObject.y : 0;
+        if (!this.status.drag && !this.status.loading && !this.status.firebaseDriven) {
+            this.coordinates[0] = firebaseObject.x ? firebaseObject.x : 90;
+            this.coordinates[1] = firebaseObject.y ? firebaseObject.y : 90;
+            this.status.firebaseDriven = true;
+            setTimeout(() => {
+                this.status.firebaseDriven = false;
+            }, 1000);
         }
     }
 
