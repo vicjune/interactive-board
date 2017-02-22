@@ -30,13 +30,13 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
         ready: false,
         hidden: true,
         loading: false,
-        firebaseDriven: false,
         dying: false
     };
     @Input() magnet: Magnet;
     @Input() board: Rectangle;
     @Input() eventCatched: MouseEvent;
     @Output() destroy = new EventEmitter();
+    @Output() ready = new EventEmitter();
 
     private subscription;
 
@@ -52,8 +52,9 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
                 this.status.dying = firebaseObject.dying ? firebaseObject.dying : false;
                 this.status.ready = true;
                 setTimeout(() => {
+                    this.ready.emit();
                     this.status.hidden = false;
-                }, 1000);
+                });
             },
             error => this.ErrorService.input('connection', error)
         );
@@ -108,13 +109,9 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     private updateCoordinates(firebaseObject: any) {
-        if (!this.status.drag && !this.status.loading && !this.status.firebaseDriven) {
+        if (!this.status.drag && !this.status.loading) {
             this.coordinates[0] = firebaseObject.x ? firebaseObject.x : 90;
             this.coordinates[1] = firebaseObject.y ? firebaseObject.y : 90;
-            this.status.firebaseDriven = true;
-            setTimeout(() => {
-                this.status.firebaseDriven = false;
-            }, 1000);
         }
     }
 

@@ -8,8 +8,15 @@
     [magnet]="magnet"
     [eventCatched]="event"
     [board]="rectangle"
-    (destroy)="animateDestroy($event)"></magnet>
+    (destroy)="animateDestroy($event)"
+    (ready)="onLoaded()"></magnet>
     <div class="animation"
     [ngStyle]="{'background-color': animation.color, 'width.%': animation.width, 'height.%': animation.height,'left.%': animation.x, 'top.%': animation.y}"
-    [ngClass]="{'animate': animation.animate}"></div>
+    [ngClass]="{'animate': animation.animate}">
+    </div>
+    <div class="loader" *ngIf="loading">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+        </svg>
+    </div>
 </div>

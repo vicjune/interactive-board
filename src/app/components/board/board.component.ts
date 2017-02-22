@@ -18,6 +18,7 @@ export class BoardComponent implements OnInit {
     event: MouseEvent;
     magnets: Magnet[] = [];
     rectangle: Rectangle;
+    loading: boolean = true;
     animation = {
         animate: false,
         x: 0,
@@ -66,6 +67,10 @@ export class BoardComponent implements OnInit {
 
     catchEvent(e: MouseEvent): void {
         this.event = e;
+    }
+
+    onLoaded(): void {
+        this.loading = false;
     }
 
     animateDestroy(data): void {
