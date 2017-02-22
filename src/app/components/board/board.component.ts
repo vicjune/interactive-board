@@ -21,11 +21,13 @@ export class BoardComponent implements OnInit {
     loading: boolean = true;
     animation = {
         animate: false,
-        x: 0,
-        y: 0,
+        coordinates: {
+            x: 0,
+            y: 0
+        },
         height: 0,
         width: 0,
-        color: ''
+        magnet: null
     }
     @ViewChild('board') board: ElementRef;
 
@@ -75,9 +77,11 @@ export class BoardComponent implements OnInit {
 
     animateDestroy(data): void {
         this.animation.animate = true;
-        this.animation.x = data.x;
-        this.animation.y = data.y;
-        this.animation.color = data.color;
+        this.animation.coordinates = {
+            x: data.x,
+            y: data.y
+        }
+        this.animation.magnet = data.magnet;
         this.animation.width = data.width;
         this.animation.height = data.height;
         setTimeout(() => {

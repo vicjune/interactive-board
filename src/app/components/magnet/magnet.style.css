@@ -22,6 +22,10 @@
     transition: opacity 0.5s ease 0.5s;
 }
 
+.magnet.animation {
+    background-color: red;
+}
+
 .svg {
     height: 100%;
     width: 100%;

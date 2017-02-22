@@ -30,11 +30,13 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
         ready: false,
         hidden: true,
         loading: false,
+        animation: false,
         dying: false
     };
     @Input() magnet: Magnet;
     @Input() board: Rectangle;
     @Input() eventCatched: MouseEvent;
+    @Input() animationCoordinates;
     @Output() destroy = new EventEmitter();
     @Output() ready = new EventEmitter();
 
@@ -46,29 +48,38 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
         this.svg.width = Constants.SVG[this.magnet.type].WIDTH ? Constants.SVG[this.magnet.type].WIDTH/10 : Constants.SVG[this.magnet.type].VIEW_BOX[0]/10;
         this.svg.height = Constants.SVG[this.magnet.type].HEIGHT ? Constants.SVG[this.magnet.type].HEIGHT/10 : Constants.SVG[this.magnet.type].VIEW_BOX[1]/10;
 
-        this.subscription = this.FirebaseService.bindMagnetObject(this.magnet.id).subscribe(
-            firebaseObject => {
-                this.updateCoordinates(firebaseObject);
-                this.status.dying = firebaseObject.dying ? firebaseObject.dying : false;
-                this.status.ready = true;
-                setTimeout(() => {
-                    this.ready.emit();
-                    this.status.hidden = false;
-                });
-            },
-            error => this.ErrorService.input('connection', error)
-        );
+        if (this.animationCoordinates) {
+            this.updateCoordinates(this.animationCoordinates);
+            this.status.ready = true;
+            this.status.animation = true;
+            this.status.hidden = false;
+        } else {
+            this.subscription = this.FirebaseService.bindMagnetObject(this.magnet.id).subscribe(
+                firebaseObject => {
+                    this.updateCoordinates(firebaseObject);
+                    this.status.dying = firebaseObject.dying ? firebaseObject.dying : false;
+                    this.status.ready = true;
+                    setTimeout(() => {
+                        this.ready.emit();
+                        this.status.hidden = false;
+                    });
+                },
+                error => this.ErrorService.input('connection', error)
+            );
+        }
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
-        this.destroy.emit({
-            x: this.coordinates[0],
-            y: this.coordinates[1],
-            height: this.svg.height,
-            width: this.svg.width,
-            color: this.magnet.color
-        });
+        if (!this.animationCoordinates) {
+            this.destroy.emit({
+                x: this.coordinates[0],
+                y: this.coordinates[1],
+                height: this.svg.height,
+                width: this.svg.width,
+                magnet: this.magnet
+            });
+            this.subscription.unsubscribe();
+        }
     }
 
     ngOnChanges(changes) {
@@ -84,7 +95,7 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     mouseDown(e) {
-        if (!this.status.drag && !this.status.loading) {
+        if (!this.status.drag && !this.status.loading && !this.status.animation) {
             this.status.drag = true;
             this.mouseOffset = [e.offsetX, e.offsetY];
             this.coordinates = [this.toPercentage(e.pageX - e.offsetX - this.board.left, 'x'), this.toPercentage(e.pageY - e.offsetY - this.board.top, 'y')];

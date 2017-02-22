@@ -1,5 +1,5 @@
 <div class="magnet"
-    [ngClass]="{'dragging': status.drag, 'ready': status.ready, 'loading': status.loading, 'hidden': status.hidden}"
+    [ngClass]="{'dragging': status.drag, 'ready': status.ready, 'loading': status.loading, 'hidden': status.hidden, 'animation': status.animation}"
     [ngStyle]="{'left.%': coordinates[0], 'top.%': coordinates[1], 'width.%': svg.width, 'height.%': svg.height}"
     (mousedown)="mouseDown($event)">
     <svg class="svg" [attr.viewBox]="svg.viewBox">
