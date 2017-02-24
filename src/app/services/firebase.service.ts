@@ -34,12 +34,4 @@ export class FirebaseService {
             type: type
         });
     }
-
-    // TODO SERVER SIDE
-    addMagnet(type: string, color: string) {
-        return this.bindMagnetList().push({
-            type: type,
-            color: color
-        });
-    }
 }

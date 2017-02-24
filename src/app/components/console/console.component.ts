@@ -86,14 +86,6 @@ export class ConsoleComponent implements OnInit {
         } else {
             this.ErrorService.input('letter-selected');
         }
-
-        // TODO SERVER SIDE
-        this.FirebaseService.addMagnet(letter.type, 'red')
-        .then( () => {
-            console.log('ok');
-        }).catch( error => {
-            console.error(error);
-        });
     }
 
     private reset(): void {
@@ -108,9 +100,6 @@ export class ConsoleComponent implements OnInit {
             let now = + new Date;
             this.state.timeLeft = Math.floor((this.serverStatus.nextDraw - now) / 1000);
             let percentage = Math.floor((this.serverStatus.nextDraw - now) / (this.serverStatus.nextDraw - this.serverStatus.lastDraw) * 100 );
-
-            this.state.timeLeft = 130; //TEMP
-            percentage = 70; // TEMP
 
             if (percentage <= 50) {
                 this.state.percentageDisplay = 'linear-gradient(90deg, rgba(250, 250, 250, 1) 50%, transparent 50%, transparent), linear-gradient(' + (360 * percentage / 100 + 90) + 'deg, #4c91ff 50%, rgba(250, 250, 250, 1) 50%, rgba(250, 250, 250, 1))';
