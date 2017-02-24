@@ -25,3 +25,17 @@ function createMagnet(type, color) {
 }
 
 startListeners();
+
+
+// Affect firebase from server console
+var stdin = process.openStdin();
+stdin.addListener("data", function(d) {
+    var command = d.toString().trim();
+
+    if (command === 'add magnet') {
+        setTimeout(function() {
+            createMagnet('a', 'blue');
+            console.log('Magnet created');
+        }, 2000)
+    }
+});
