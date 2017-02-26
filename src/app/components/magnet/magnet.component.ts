@@ -56,13 +56,15 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
         } else {
             this.subscription = this.FirebaseService.bindMagnetObject(this.magnet.id).subscribe(
                 firebaseObject => {
-                    this.updateCoordinates(firebaseObject);
-                    this.status.dying = firebaseObject.dying ? firebaseObject.dying : false;
-                    this.status.ready = true;
-                    setTimeout(() => {
-                        this.ready.emit();
-                        this.status.hidden = false;
-                    });
+                    if (firebaseObject.$exists()) {
+                        this.updateCoordinates(firebaseObject);
+                        this.status.dying = firebaseObject.dying ? firebaseObject.dying : false;
+                        this.status.ready = true;
+                        setTimeout(() => {
+                            this.ready.emit();
+                            this.status.hidden = false;
+                        });
+                    }
                 },
                 error => this.ErrorService.input('connection', error)
             );

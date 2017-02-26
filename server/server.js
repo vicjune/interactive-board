@@ -1,36 +1,67 @@
 // TODO create firebase rules
 'use strict';
 
-var firebase = require('firebase-admin');
-var serviceAccount = require("./interactive-board-account.json");
+let firebase = require('firebase-admin');
+let serviceAccount = require("./interactive-board-account.json");
 
 firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),
     databaseURL: 'https://interactive-board-999c5.firebaseio.com'
 });
 
+let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+let lettersRef = firebase.database().ref('/letters');
+let magnetsRef = firebase.database().ref('/magnets');
+let statusRef = firebase.database().ref('/status');
+
+function setupFirebase() {
+    lettersRef.once('value', payload => {
+        for (let letter of letters) {
+            if (!(payload.exists() && letter in payload.val())) {
+                let formatedList = {};
+                for (let letter of letters) {
+                    formatedList[letter] = false;
+                }
+                lettersRef.set(formatedList);
+                console.log('Letters list setted');
+                break;
+            }
+        }
+    });
+
+    statusRef.once('value', payload => {
+        if (!(payload.exists() && 'lastDraw' in payload.val() && 'nextDraw' in payload.val())) {
+            statusRef.set({
+                lastDraw: 0,
+                nextDraw: 0
+            });
+            console.log('Server status setted');
+        }
+    });
+}
+
 function startListeners() {
-    firebase.database().ref('/letters').on('child_added', function(postSnapshot) {
-        console.log('letter added');
+    lettersRef.on('value', postSnapshot => {
+        console.log('letter modified');
     });
     console.log('Server started');
-    //TODO check if firebase bdd is already setup and else create folders and stuff
 }
 
 function createMagnet(type, color) {
-    firebase.database().ref('/magnets').push({
+    magnetsRef.push({
         type: type,
         color: color
     });
 }
 
+setupFirebase();
 startListeners();
 
 
 // Affect firebase from server console
-var stdin = process.openStdin();
+let stdin = process.openStdin();
 stdin.addListener("data", function(d) {
-    var command = d.toString().trim();
+    let command = d.toString().trim();
 
     if (command === 'add magnet') {
         setTimeout(function() {

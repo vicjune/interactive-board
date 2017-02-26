@@ -25,13 +25,11 @@ export class FirebaseService {
         });
     }
 
-    bindLetterList(): FirebaseListObservable<any>{
-        return this.af.database.list('/letters');
+    bindLettersObject(): FirebaseObjectObservable<any> {
+        return this.af.database.object('/letters');
     }
 
-    addLetter(type: string) {
-        return this.bindLetterList().push({
-            type: type
-        });
+    setLetter(type: string) {
+        return this.af.database.object('/letters/' + type).set(true);
     }
 }

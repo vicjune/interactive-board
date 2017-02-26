@@ -32,11 +32,11 @@ export class ConsoleComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        for (let i = 0; i < Constants.LETTERS.length; ++i) {
+        for (let letter of Constants.LETTERS) {
             this.letters.push({
                 selected: false,
                 voted: false,
-                type: Constants.LETTERS[i]
+                type: letter
             });
         }
 
@@ -48,16 +48,10 @@ export class ConsoleComponent implements OnInit {
             }
         );
 
-        this.FirebaseService.bindLetterList().subscribe(
-            firebaseList => {
-                for (let i = 0; i < this.letters.length; ++i) {
-                    this.letters[i].voted = false;
-
-                    firebaseList.forEach(item => {
-                        if (this.letters[i].type === item.type) {
-                            this.letters[i].voted = true;
-                        }
-                    });
+        this.FirebaseService.bindLettersObject().subscribe(
+            firebaseObject => {
+                for (let letter of this.letters) {
+                    letter.voted = firebaseObject[letter.type];
                 }
                 this.state.ready = true;
             }
@@ -74,7 +68,7 @@ export class ConsoleComponent implements OnInit {
             if (!letter.voted) {
                 this.state.letterSelected = true;
                 letter.selected = true;
-                this.FirebaseService.addLetter(letter.type)
+                this.FirebaseService.setLetter(letter.type)
                 .then(() => {})
                 .catch(error => {
                     this.ErrorService.input('connection', error);

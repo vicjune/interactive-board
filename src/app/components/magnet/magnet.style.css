@@ -23,7 +23,7 @@
 }
 
 .magnet.animation {
-    background-color: red;
+    animation: disappear 1s forwards;
 }
 
 .svg {
@@ -33,4 +33,10 @@
 
 .path {
     transform: scale(0.8);
+}
+
+@keyframes disappear {
+    to {
+        opacity: 0;
+    }
 }
