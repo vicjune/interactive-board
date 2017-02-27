@@ -85,6 +85,9 @@ export class ConsoleComponent implements OnInit {
 
     private reset(): void {
         this.state.letterSelected = false;
+        this.letters.forEach(letter => {
+            letter.selected = false;
+        });
     }
 
     private setTimer(): void {
