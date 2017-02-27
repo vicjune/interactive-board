@@ -9,8 +9,8 @@ export class FirebaseService {
         return this.af.database.object('/status');
     }
 
-    bindLastMagnetObject(): FirebaseObjectObservable<any>{
-        return this.af.database.object('/lastMagnet');
+    bindDyingMagnetsObject(): FirebaseObjectObservable<any>{
+        return this.af.database.object('/dyingMagnets');
     }
 
     bindMagnetList(): FirebaseListObservable<any>{
