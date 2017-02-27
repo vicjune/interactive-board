@@ -33,6 +33,7 @@
 
 .path {
     transform: scale(0.8);
+    transition: fill 1s;
 }
 
 @keyframes disappear {

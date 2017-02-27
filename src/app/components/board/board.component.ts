@@ -6,9 +6,10 @@ import { Magnet } from './../../interfaces/magnet';
 import { Rectangle } from './../../interfaces/rectangle';
 
 @Component({
+    moduleId: module.id,
     selector: 'board',
-    templateUrl: './board.template.html',
-    styleUrls: ['./board.style.css']
+    templateUrl: 'board.template.html',
+    styleUrls: ['board.style.css']
 })
 export class BoardComponent implements OnInit {
     constructor(

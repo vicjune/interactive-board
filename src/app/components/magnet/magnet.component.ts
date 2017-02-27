@@ -7,9 +7,10 @@ import { Rectangle } from './../../interfaces/rectangle';
 import { Constants } from './../../constants';
 
 @Component({
+    moduleId: module.id,
     selector: 'magnet',
-    templateUrl: './magnet.template.html',
-    styleUrls: ['./magnet.style.css']
+    templateUrl: 'magnet.template.html',
+    styleUrls: ['magnet.style.css']
 })
 export class MagnetComponent implements OnInit, OnDestroy {
     constructor(
@@ -40,6 +41,7 @@ export class MagnetComponent implements OnInit, OnDestroy {
     @Output() ready = new EventEmitter();
 
     private subscription;
+    private lastMagnetSubscription;
 
     ngOnInit() {
         this.svg.path = Constants.SVG[this.magnet.type].PATH;
@@ -52,18 +54,25 @@ export class MagnetComponent implements OnInit, OnDestroy {
             this.status.ready = true;
             this.status.animation = true;
             this.status.hidden = false;
+            this.status.dying = true;
         } else {
             this.subscription = this.FirebaseService.bindMagnetObject(this.magnet.id).subscribe(
                 firebaseObject => {
                     if (firebaseObject.$exists()) {
                         this.updateCoordinates(firebaseObject);
-                        this.status.dying = firebaseObject.dying ? firebaseObject.dying : false;
                         this.status.ready = true;
                         setTimeout(() => {
                             this.ready.emit();
                             this.status.hidden = false;
                         });
                     }
+                },
+                error => this.ErrorService.input('connection', error)
+            );
+
+            this.lastMagnetSubscription = this.FirebaseService.bindLastMagnetObject().subscribe(
+                firebaseLastMagnetId => {
+                    this.status.dying = this.magnet.id === firebaseLastMagnetId.$value;
                 },
                 error => this.ErrorService.input('connection', error)
             );
@@ -80,6 +89,7 @@ export class MagnetComponent implements OnInit, OnDestroy {
                 magnet: this.magnet
             });
             this.subscription.unsubscribe();
+            this.lastMagnetSubscription.unsubscribe();
         }
     }
 

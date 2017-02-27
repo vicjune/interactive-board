@@ -9,6 +9,10 @@ export class FirebaseService {
         return this.af.database.object('/status');
     }
 
+    bindLastMagnetObject(): FirebaseObjectObservable<any>{
+        return this.af.database.object('/lastMagnet');
+    }
+
     bindMagnetList(): FirebaseListObservable<any>{
         return this.af.database.list('/magnets');
     }
@@ -20,8 +24,7 @@ export class FirebaseService {
     setCoordinates(id: string, coordinates: number[]) {
         return this.bindMagnetObject(id).update({
             x: coordinates[0],
-            y: coordinates[1],
-            timestamp: + new Date
+            y: coordinates[1]
         });
     }
 

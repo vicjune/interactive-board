@@ -10,9 +10,13 @@ firebase.initializeApp({
 });
 
 let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
+let statusRef = firebase.database().ref('/status');
 let lettersRef = firebase.database().ref('/letters');
 let magnetsRef = firebase.database().ref('/magnets');
-let statusRef = firebase.database().ref('/status');
+let lastMagnetRef = firebase.database().ref('/lastMagnet');
+
+let magnetsInOrder = [];
 
 function setupFirebase() {
     lettersRef.once('value', payload => {
@@ -40,13 +44,29 @@ function setupFirebase() {
     });
 }
 
+function buildMagnetsOrderedList() {
+    magnetsRef.orderByChild('timestamp').once('value', payload => {
+        if (payload.exists()) {
+            magnetsInOrder = [];
+            payload.forEach(firebaseMagnet => {
+                magnetsInOrder.push(firebaseMagnet.key);
+            });
+            lastMagnetRef.set(magnetsInOrder[0]);
+        }
+    });
+}
+
 function startListeners() {
     lettersRef.on('value', postSnapshot => {
         handleLetters(postSnapshot);
     });
-    magnetsRef.on('value', postSnapshot => {
-        handleMagnets(postSnapshot);
+
+    magnetsRef.on('child_changed', postSnapshot => {
+        if (postSnapshot.exists()) {
+            handleMagnet(postSnapshot);
+        }
     });
+
     console.log('Server started');
 }
 
@@ -54,22 +74,31 @@ function handleLetters(firebaseLetters) {
 
 }
 
-function handleMagnets(firebaseMagnets) {
+function handleMagnet(firebaseMagnet) {
+    firebase.database().ref('/magnets/' + firebaseMagnet.key).update({
+        timestamp: + new Date()
+    });
 
+    // Put modified magnet at the end of the array
+    magnetsInOrder.push(magnetsInOrder.splice(magnetsInOrder.indexOf(firebaseMagnet.key), 1)[0]);
+    lastMagnetRef.set(magnetsInOrder[0]);
 }
 
 function createMagnet(type, color) {
     magnetsRef.push({
         type: type,
-        color: color
+        color: color,
+        timestamp: + new Date()
     });
+    buildMagnetsOrderedList();
 }
 
 setupFirebase();
+buildMagnetsOrderedList();
 startListeners();
 
 
-// Affect firebase from server console
+// Instruct firebase from server console
 let stdin = process.openStdin();
 stdin.addListener("data", function(d) {
     let command = d.toString().trim();

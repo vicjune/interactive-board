@@ -6,9 +6,10 @@ import { Letter } from './../../interfaces/letter';
 import { Constants } from './../../constants';
 
 @Component({
+    moduleId: module.id,
     selector: 'console',
-    templateUrl: './console.template.html',
-    styleUrls: ['./console.style.css']
+    templateUrl: 'console.template.html',
+    styleUrls: ['console.style.css']
 })
 export class ConsoleComponent implements OnInit {
     constructor(
