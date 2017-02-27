@@ -1,12 +1,8 @@
 <div class="board" #board
-(window:resize)="onResize()"
-(mousemove)="catchEvent($event)"
-(mouseup)="catchEvent($event)"
-(mouseleave)="catchEvent($event)">
+(window:resize)="onResize()">
     <magnet
     *ngFor="let magnet of magnets"
     [magnet]="magnet"
-    [eventCatched]="event"
     [board]="rectangle"
     (destroy)="animateDestroy($event)"
     (ready)="onLoaded()"></magnet>

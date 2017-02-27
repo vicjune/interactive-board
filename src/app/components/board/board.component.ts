@@ -67,10 +67,6 @@ export class BoardComponent implements OnInit {
         this.buildRectangle();
     }
 
-    catchEvent(e: MouseEvent): void {
-        this.event = e;
-    }
-
     onLoaded(): void {
         this.loading = false;
     }

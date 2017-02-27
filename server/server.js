@@ -42,9 +42,20 @@ function setupFirebase() {
 
 function startListeners() {
     lettersRef.on('value', postSnapshot => {
-        console.log('letter modified');
+        handleLetters(postSnapshot);
+    });
+    magnetsRef.on('value', postSnapshot => {
+        handleMagnets(postSnapshot);
     });
     console.log('Server started');
+}
+
+function handleLetters(firebaseLetters) {
+
+}
+
+function handleMagnets(firebaseMagnets) {
+
 }
 
 function createMagnet(type, color) {

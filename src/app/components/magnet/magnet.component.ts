@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
 import { ErrorService } from './../../services/error.service';
@@ -11,7 +11,7 @@ import { Constants } from './../../constants';
     templateUrl: './magnet.template.html',
     styleUrls: ['./magnet.style.css']
 })
-export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
+export class MagnetComponent implements OnInit, OnDestroy {
     constructor(
         private FirebaseService: FirebaseService,
         private ErrorService: ErrorService
@@ -35,7 +35,6 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
     };
     @Input() magnet: Magnet;
     @Input() board: Rectangle;
-    @Input() eventCatched: MouseEvent;
     @Input() animationCoordinates;
     @Output() destroy = new EventEmitter();
     @Output() ready = new EventEmitter();
@@ -81,18 +80,6 @@ export class MagnetComponent implements OnInit, OnChanges, OnDestroy {
                 magnet: this.magnet
             });
             this.subscription.unsubscribe();
-        }
-    }
-
-    ngOnChanges(changes) {
-        if (changes.eventCatched && changes.eventCatched.currentValue !== undefined) {
-            let eventType = changes.eventCatched.currentValue.type;
-            if (eventType === 'mousemove') {
-                this.mouseMove(changes.eventCatched.currentValue);
-            }
-            if (eventType === 'mouseleave' || eventType === 'mouseup') {
-                this.mouseUp();
-            }
         }
     }
 
