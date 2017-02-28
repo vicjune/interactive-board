@@ -14,10 +14,13 @@
         <div class="nextRound">
             <div class="nextRoundMessage">
                 <span *ngIf="state.timeLeft > 0">Next letter in</span>
-                <span *ngIf="state.timeLeft <= 0">New letter coming up...</span>
+                <span *ngIf="state.timeLeft <= 0">New letter ready to come out !</span>
             </div>
-            <div class="percentage" [ngStyle]="{'background-image': state.percentageDisplay}" *ngIf="state.timeLeft > 0">
-                <div class="percentageTimeLeft">{{ state.timeLeft | timeLeft }}</div>
+            <div class="percentage" [ngStyle]="{'background-image': state.percentageDisplay}" [ngClass]="{'hidden': state.timeLeft <= 0}">
+                <div class="percentageTimeLeft">
+                    <div class="percentageTimeLeftNumber">{{ state.timeLeft | timeLeft }}</div>
+                    <div class="percentageTimeLeftUnits">{{ state.timeLeft < 60 ? 'sec' : 'min' }}</div>
+                </div>
             </div>
         </div>
     </div>

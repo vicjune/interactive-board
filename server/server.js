@@ -9,11 +9,15 @@ firebase.initializeApp({
     databaseURL: 'https://interactive-board-999c5.firebaseio.com'
 });
 
-// TODO dynamic max, interval and colors from firebase & setup by the server if no folder present
-let maxMagnets = 25;
-let fixedInterval = 300;
 let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-let availableColors = ['red', 'green', 'orange', 'purple'];
+
+let maxMagnets;
+let fixedInterval;
+let availableColors;
+
+let maxRef = firebase.database().ref('/constants/maxNumberOfMagnets');
+let intervalRef = firebase.database().ref('/constants/intervalBetweenDraws');
+let colorsRef = firebase.database().ref('/constants/availableColors');
 
 let statusRef = firebase.database().ref('/status');
 let lettersRef = firebase.database().ref('/letters');
@@ -23,10 +27,15 @@ let dyingMagnetsRef = firebase.database().ref('/dyingMagnets');
 let magnetsInOrder = [];
 let localLettersList = [];
 
-let lettersListListener = true;
+let lettersRefListener = true;
+let maxRefListener = true;
+let intervalRefListener = true;
+let colorsRefListener = true;
+
+let serverStarted = false;
+
 let drawTimeout = null;
 
-let serverLastDraw = 0;
 let serverNextDraw = 0;
 
 let resettedLettersList = {};
@@ -53,7 +62,6 @@ function setupFirebase() {
             });
             console.log('Server status setted');
         } else {
-            serverLastDraw = payload.val().lastDraw;
             serverNextDraw = payload.val().nextDraw;
         }
     });
@@ -85,45 +93,112 @@ function buildLettersList() {
 }
 
 function startListeners() {
-    lettersRef.on('child_changed', postSnapshot => {
-        if (lettersListListener && postSnapshot.val()) {
-            handleLetter(postSnapshot);
-        }
+    let p1 = new Promise((resolve, reject) => {
+        maxRef.on('value', postSnapshot => {
+            if (maxRefListener) {
+                if (postSnapshot.val() && postSnapshot.val() > 0) {
+                    maxMagnets = postSnapshot.val();
+                } else {
+                    maxRefListener = false;
+                    maxMagnets = 25;
+                    maxRef.set(maxMagnets).then(() => {
+                        maxRefListener = true;
+                    });
+                }
+
+                resolve();
+
+                setDyingMagnets();
+            }
+        });
     });
 
-    magnetsRef.on('child_changed', postSnapshot => {
-        if (postSnapshot.exists()) {
-            handleMagnet(postSnapshot);
-        }
+    let p2 = new Promise((resolve, reject) => {
+        intervalRef.on('value', postSnapshot => {
+            if (intervalRefListener) {
+                if (postSnapshot.val() && postSnapshot.val() > 0) {
+                    fixedInterval = postSnapshot.val();
+                } else {
+                    intervalRefListener = false;
+                    fixedInterval = 300;
+                    intervalRef.set(fixedInterval).then(() => {
+                        intervalRefListener = true;
+                    });
+                }
+
+                resolve();
+
+                if (drawTimeout) {
+                    clearTimeout(drawTimeout);
+                    drawTimeout = null;
+                }
+                generateDraw();
+            }
+        });
     });
 
-    magnetsRef.on('child_removed', postSnapshot => {
-       magnetsInOrder.splice(magnetsInOrder.indexOf(postSnapshot.key), 1);
-       setDyingMagnets();
+    let p3 = new Promise((resolve, reject) => {
+        colorsRef.on('value', postSnapshot => {
+            if (colorsRefListener) {
+                if (postSnapshot.val() && postSnapshot.val().length > 0) {
+                    availableColors = postSnapshot.val();
+                } else {
+                    colorsRefListener = false;
+                    availableColors = ['red', 'green', 'orange'];
+                    colorsRef.set(availableColors).then(() => {
+                        colorsRefListener = true;
+                    });
+                }
+            }
+
+            resolve();
+        });
+    });
+
+    Promise.all([p1, p2, p3]).then(() => {
+        if (!serverStarted) {
+            serverStarted = true;
+
+            lettersRef.on('child_changed', postSnapshot => {
+                if (lettersRefListener && postSnapshot.val()) {
+                    handleLetter(postSnapshot);
+                }
+            });
+
+            magnetsRef.on('child_changed', postSnapshot => {
+                if (postSnapshot.exists()) {
+                    handleMagnet(postSnapshot);
+                }
+            });
+
+            magnetsRef.on('child_removed', postSnapshot => {
+               magnetsInOrder.splice(magnetsInOrder.indexOf(postSnapshot.key), 1);
+               setDyingMagnets();
+            });
+
+            console.log('Server started');
+        }
     });
 }
 
 function handleLetter(firebaseLetter) {
     localLettersList.push(firebaseLetter.key);
 
-    if (magnetsInOrder.length >= maxMagnets) {
-        let now = + new Date();
-        if (serverNextDraw > now) {
-            if (!drawTimeout) {
-                drawTimeout = setTimeout(() => {
-                    generateDraw(true);
-                }, serverNextDraw - now);
-            }
-        } else {
-            // if () {
-
-            // }
+    let now = + new Date();
+    if (serverNextDraw > now) {
+        if (!drawTimeout) {
+            drawTimeout = setTimeout(() => {
+                generateDraw();
+                drawTimeout = null;
+            }, serverNextDraw - now);
         }
     } else {
-        generateDraw(false);
+        if (drawTimeout) {
+            clearTimeout(drawTimeout);
+            drawTimeout = null;
+        }
+        generateDraw();
     }
-
-    // simplify this, first if not required, param of generateDraw not required
 }
 
 function handleMagnet(firebaseMagnet) {
@@ -140,23 +215,33 @@ function setDyingMagnets() {
     if (magnetsInOrder.length >= maxMagnets) {
         dyingMagnetsRef.set(magnetsInOrder.slice(0, magnetsInOrder.length - maxMagnets + 1));
     } else {
-        dyingMagnetsRef.set(null);
+        dyingMagnetsRef.remove();
     }
 }
 
-function generateDraw(deleteDyingMagnets) {
-    lettersListListener = false;
-    lettersRef.set(resettedLettersList).then(() => {
-        createMagnet(localLettersList[Math.floor(Math.random() * localLettersList.length)]);
-        statusRef.update({
-            lastDraw: + new Date(),
-            nextDraw: 0
+function generateDraw() {
+    if (localLettersList.length > 0) {
+        serverNextDraw = 0;
+
+        if (magnetsInOrder.length >= maxMagnets) {
+            serverNextDraw = (+ new Date()) + fixedInterval * 1000;
+            for (let dyingMagnetId of magnetsInOrder.slice(0, magnetsInOrder.length - maxMagnets + 1)) {
+                firebase.database().ref('/magnets/' + dyingMagnetId).remove();
+            }
+        }
+
+        lettersRefListener = false;
+        lettersRef.set(resettedLettersList).then(() => {
+            createMagnet(localLettersList[Math.floor(Math.random() * localLettersList.length)]);
+
+            statusRef.update({
+                lastDraw: + new Date(),
+                nextDraw: serverNextDraw
+            });
+
+            localLettersList = [];
+            lettersRefListener = true;
         });
-        localLettersList = [];
-        lettersListListener = true;
-    });
-    if (deleteDyingMagnets) {
-        //TODO delete all magnets of dying magnets array
     }
 }
 
@@ -166,6 +251,7 @@ function createMagnet(type) {
         color: availableColors[Math.floor(Math.random() * availableColors.length)],
         timestamp: + new Date()
     });
+
     buildMagnetsOrderedList();
 }
 
@@ -173,10 +259,9 @@ setupFirebase();
 buildMagnetsOrderedList();
 buildLettersList();
 startListeners();
-console.log('Server started');
 
 
-// TEMP Instruct firebase from server console
+// Manually instruct firebase from server console
 let stdin = process.openStdin();
 stdin.addListener("data", function(d) {
     let command = d.toString().trim();

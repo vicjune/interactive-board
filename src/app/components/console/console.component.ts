@@ -96,8 +96,8 @@ export class ConsoleComponent implements OnInit {
         }
         this.state.interval = setInterval(() => {
             let now = + new Date;
-            this.state.timeLeft = Math.floor((this.serverStatus.nextDraw - now) / 1000);
-            let percentage = Math.floor((this.serverStatus.nextDraw - now) / (this.serverStatus.nextDraw - this.serverStatus.lastDraw) * 100 );
+            this.state.timeLeft = Math.max(0, Math.floor((this.serverStatus.nextDraw - now) / 1000));
+            let percentage = Math.min(100, 100 - Math.floor((this.serverStatus.nextDraw - now) / (this.serverStatus.nextDraw - this.serverStatus.lastDraw) * 100 ));
 
             if (percentage <= 50) {
                 this.state.percentageDisplay = 'linear-gradient(90deg, rgba(250, 250, 250, 1) 50%, transparent 50%, transparent), linear-gradient(' + (360 * percentage / 100 + 90) + 'deg, #4c91ff 50%, rgba(250, 250, 250, 1) 50%, rgba(250, 250, 250, 1))';

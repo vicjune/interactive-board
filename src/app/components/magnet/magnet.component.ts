@@ -72,7 +72,11 @@ export class MagnetComponent implements OnInit, OnDestroy {
 
             this.lastMagnetSubscription = this.FirebaseService.bindDyingMagnetsObject().subscribe(
                 firebaseDyingMagnets => {
-                    this.status.dying = firebaseDyingMagnets.indexOf(this.magnet.id) > -1;
+                    if (firebaseDyingMagnets.$exists() && firebaseDyingMagnets.length > 0) {
+                        this.status.dying = firebaseDyingMagnets.indexOf(this.magnet.id) > -1;
+                    } else {
+                        this.status.dying = false;
+                    }
                 },
                 error => this.ErrorService.input('connection', error)
             );
