@@ -4,6 +4,7 @@
     *ngFor="let magnet of magnets"
     [magnet]="magnet"
     [board]="rectangle"
+    [boardLoading]="loading"
     (destroy)="animateDestroy($event)"
     (ready)="onLoaded()"></magnet>
     <magnet

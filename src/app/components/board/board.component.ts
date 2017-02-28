@@ -83,7 +83,7 @@ export class BoardComponent implements OnInit {
         this.animation.height = data.height;
         setTimeout(() => {
             this.animation.animate = false;
-        }, 1000);
+        }, 3000);
     }
 
     private buildRectangle(): void {

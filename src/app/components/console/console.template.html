@@ -2,7 +2,7 @@
     <div class="error" [ngClass]="{'displayed': error.display}">{{ error.message }}</div>
     <div class="consoleContent" *ngIf="serverStatus">
         <div class="lettersList">
-            <div class="voteMessage">Vote for the next letter to appear</div>
+            <div class="voteMessage">Vote now for the next letter !</div>
             <button class="letterItem"
             *ngFor="let letter of letters"
             [ngClass]="{'selected': letter.selected, 'voted': letter.voted}"

@@ -32,11 +32,13 @@ export class MagnetComponent implements OnInit, OnDestroy {
         hidden: true,
         loading: false,
         animation: false,
-        dying: false
+        dying: false,
+        initied: false
     };
     @Input() magnet: Magnet;
     @Input() board: Rectangle;
     @Input() animationCoordinates;
+    @Input() boardLoading: boolean;
     @Output() destroy = new EventEmitter();
     @Output() ready = new EventEmitter();
 
@@ -48,6 +50,10 @@ export class MagnetComponent implements OnInit, OnDestroy {
         this.svg.viewBox = Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[0] * -0.1 + 1) + ' ' + Math.floor(Constants.SVG[this.magnet.type].VIEW_BOX[1] * -0.1 + 1) + ' ' + Constants.SVG[this.magnet.type].VIEW_BOX.join(' ');
         this.svg.width = Constants.SVG[this.magnet.type].WIDTH ? Constants.SVG[this.magnet.type].WIDTH/10 : Constants.SVG[this.magnet.type].VIEW_BOX[0]/10;
         this.svg.height = Constants.SVG[this.magnet.type].HEIGHT ? Constants.SVG[this.magnet.type].HEIGHT/10 : Constants.SVG[this.magnet.type].VIEW_BOX[1]/10;
+
+        if (this.boardLoading === false) {
+            this.status.initied = true;
+        }
 
         if (this.animationCoordinates) {
             this.updateCoordinates(this.animationCoordinates);
@@ -62,8 +68,8 @@ export class MagnetComponent implements OnInit, OnDestroy {
                         this.updateCoordinates(firebaseObject);
                         this.status.ready = true;
                         setTimeout(() => {
-                            this.ready.emit();
                             this.status.hidden = false;
+                            this.ready.emit();
                         });
                     }
                 },
