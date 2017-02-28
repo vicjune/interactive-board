@@ -1,4 +1,3 @@
-// TODO create firebase rules
 'use strict';
 
 let firebase = require('firebase-admin');
