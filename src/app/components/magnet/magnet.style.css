@@ -13,7 +13,7 @@
 }
 
 .magnet:not(.hidden).initied {
-    animation: bombRightOut 2s forwards;
+    animation: bombRightIn 2s forwards;
 }
 
 .magnet.dragging {
@@ -65,7 +65,7 @@
   }
 }
 
-@keyframes bombRightOut {
+@keyframes bombRightIn {
   0% {
     opacity: 0;
     transform-origin: 200% 50%;
@@ -81,9 +81,6 @@
   }
 
   100% {
-    opacity: 1;
     transform-origin: 50% 50%;
-    transform: rotate(0deg);
-    filter: blur(0px);
   }
 }
