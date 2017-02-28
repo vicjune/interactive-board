@@ -267,7 +267,7 @@ stdin.addListener("data", function(d) {
 
     if (command === 'add magnet') {
         setTimeout(function() {
-            createMagnet('a', 'blue');
+            createMagnet('a');
             console.log('Magnet created');
         }, 2000)
     }
