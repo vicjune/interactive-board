@@ -46,6 +46,12 @@
     transition: fill 1s;
 }
 
+@media (max-width: 1023px) {
+    .path {
+        filter: none !important;
+    }
+}
+
 @keyframes preHinge {
   0% {
     transform: rotate3d(0, 0, 1, 10deg);
@@ -97,10 +103,5 @@
     opacity: 0;
     transform-origin: 50% 50%;
     transform: scale(20) rotate(50deg);
-    filter: blur(10px);
-  }
-
-  100% {
-    transform-origin: 50% 50%;
   }
 }

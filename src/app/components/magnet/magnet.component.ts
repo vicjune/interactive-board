@@ -112,7 +112,7 @@ export class MagnetComponent implements OnInit, OnDestroy {
     }
 
     mouseDown(e) {
-        if (!this.status.drag && !this.status.loading && !this.status.animation) {
+        if (!this.status.drag && !this.status.loading && !this.status.animation && (!e.touches || e.touches.length === 1)) {
             e.preventDefault();
             this.status.drag = true;
             this.mouseOffset = [this.convertEvent(e).offsetX, this.convertEvent(e).offsetY];
@@ -121,7 +121,7 @@ export class MagnetComponent implements OnInit, OnDestroy {
     }
 
     mouseMove(e) {
-        if (this.status.drag) {
+        if (this.status.drag && (!e.touches || e.touches.length === 1)) {
             e.preventDefault();
             let x = this.toPercentage(this.convertEvent(e).pageX - this.mouseOffset[0] - this.board.left, 'x');
             let y = this.toPercentage(this.convertEvent(e).pageY - this.mouseOffset[1] - this.board.top, 'y');
@@ -144,8 +144,8 @@ export class MagnetComponent implements OnInit, OnDestroy {
             return {
                 pageX: event.targetTouches[0].pageX,
                 pageY: event.targetTouches[0].pageY,
-                offsetX: event.targetTouches[0].pageX - bouncingRect.left,
-                offsetY: event.targetTouches[0].pageY - bouncingRect.top
+                offsetX: event.targetTouches[0].pageX - bouncingRect.left - (window.pageXOffset || document.documentElement.scrollLeft),
+                offsetY: event.targetTouches[0].pageY - bouncingRect.top - (window.pageYOffset || document.documentElement.scrollTop)
             };
         } else {
             return {
