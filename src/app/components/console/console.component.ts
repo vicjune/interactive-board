@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
 import { ErrorService } from './../../services/error.service';
@@ -31,6 +31,8 @@ export class ConsoleComponent implements OnInit {
         message: '',
         timeout: null
     }
+
+    @Input() darkMode: boolean;
 
     ngOnInit(): void {
         for (let letter of Constants.LETTERS) {

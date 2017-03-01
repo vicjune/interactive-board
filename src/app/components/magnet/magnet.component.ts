@@ -35,10 +35,12 @@ export class MagnetComponent implements OnInit, OnDestroy {
         dying: false,
         initied: false
     };
+    color: string;
     @Input() magnet: Magnet;
     @Input() board: Rectangle;
     @Input() animationCoordinates;
     @Input() boardLoading: boolean;
+    @Input() darkMode: boolean;
     @Output() destroy = new EventEmitter();
     @Output() ready = new EventEmitter();
 
@@ -54,6 +56,11 @@ export class MagnetComponent implements OnInit, OnDestroy {
         if (this.boardLoading === false) {
             this.status.initied = true;
         }
+
+        this.color = Constants.COLORS[this.magnet.color] || {
+            normal: this.magnet.color,
+            darkMode: this.magnet.color
+        };
 
         if (this.animationCoordinates) {
             this.updateCoordinates(this.animationCoordinates);

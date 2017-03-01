@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
 import { ErrorService } from './../../services/error.service';
@@ -30,6 +30,8 @@ export class BoardComponent implements OnInit {
         width: 0,
         magnet: null
     }
+
+    @Input() darkMode: boolean;
     @ViewChild('board') board: ElementRef;
 
     ngOnInit(): void {

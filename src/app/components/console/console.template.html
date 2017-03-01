@@ -1,6 +1,6 @@
 <div class="console">
     <div class="error" [ngClass]="{'displayed': error.display}">{{ error.message }}</div>
-    <div class="consoleContent" *ngIf="serverStatus">
+    <div class="consoleContent" *ngIf="serverStatus" [hidden]="darkMode">
         <div class="lettersList">
             <div class="voteMessage">Vote now for the next letter !</div>
             <button class="letterItem"

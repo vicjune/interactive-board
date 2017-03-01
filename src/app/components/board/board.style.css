@@ -8,9 +8,22 @@
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
+.board.darkMode {
+    background-color: black;
+    box-shadow: none;
+    margin: 0;
+    height: 100vh;
+    width: 125vh;
+}
+
 @media (orientation:portrait) {
     .board {
         height: calc(80vw - 20px);
         width: calc(100vw - 20px);
+    }
+
+    .board.darkMode {
+        height: 80vw;
+        width: 100vw;
     }
 }

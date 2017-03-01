@@ -1,16 +1,19 @@
 <div class="board" #board
-(window:resize)="onResize()">
+(window:resize)="onResize()"
+[ngClass]="{'darkMode': darkMode}">
     <magnet
     *ngFor="let magnet of magnets"
     [magnet]="magnet"
     [board]="rectangle"
     [boardLoading]="loading"
+    [darkMode]="darkMode"
     (destroy)="animateDestroy($event)"
     (ready)="onLoaded()"></magnet>
     <magnet
     *ngIf="animation.animate"
     [magnet]="animation.magnet"
     [board]="rectangle"
+    [darkMode]="darkMode"
     [animationCoordinates]="animation.coordinates"></magnet>
     <div class="loader" *ngIf="loading">
         <svg class="circular" viewBox="25 25 50 50">

@@ -219,16 +219,18 @@ function setDyingMagnets() {
 }
 
 function generateDraw() {
-    if (localLettersList.length > 0) {
-        serverNextDraw = 0;
+    serverNextDraw = 0;
 
-        if (magnetsInOrder.length >= maxMagnets) {
-            serverNextDraw = (+ new Date()) + fixedInterval * 1000;
+    if (magnetsInOrder.length >= maxMagnets) {
+        serverNextDraw = (+ new Date()) + fixedInterval * 1000;
+        if (localLettersList.length > 0) {
             for (let dyingMagnetId of magnetsInOrder.slice(0, magnetsInOrder.length - maxMagnets + 1)) {
                 firebase.database().ref('/magnets/' + dyingMagnetId).remove();
             }
         }
+    }
 
+    if (localLettersList.length > 0) {
         lettersRefListener = false;
         lettersRef.set(resettedLettersList).then(() => {
             createMagnet(localLettersList[Math.floor(Math.random() * localLettersList.length)]);
@@ -240,6 +242,11 @@ function generateDraw() {
 
             localLettersList = [];
             lettersRefListener = true;
+        });
+    } else {
+        statusRef.update({
+            lastDraw: + new Date(),
+            nextDraw: serverNextDraw
         });
     }
 }

@@ -14,6 +14,6 @@
             <svg:feMergeNode in="SourceGraphic"/>
           </svg:feMerge>
         </svg:filter>
-        <svg:path class="path" [ngStyle]="{'fill': magnet.color, 'filter': 'url(#dropshadow' + magnet.id + ')'}" [attr.d]="svg.path"/>
+        <svg:path class="path" [ngStyle]="{'fill': darkMode ? color.darkMode : color.normal, 'filter': 'url(#dropshadow' + magnet.id + ')'}" [attr.d]="svg.path"/>
     </svg>
 <div>

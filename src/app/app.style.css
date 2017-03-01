@@ -2,6 +2,10 @@ main {
     display: flex;
 }
 
+main.darkMode {
+    background-color: black;
+}
+
 console {
     flex-basis: auto;
     flex-shrink: 1;
