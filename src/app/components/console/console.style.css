@@ -34,13 +34,13 @@
     font-family: 'Pangolin', cursive;
     font-size: 16px;
     background-color: rgba(250, 250, 250, 1);
-    border: none;
+    border: 1px solid rgba(240, 240, 240, 1);
     outline: none;
     border-radius: 50%;
     cursor: pointer;
     height: 30px;
     width: 30px;
-    margin: 0 2px 2px 0;
+    margin: 0 4px 4px 0;
     transition: background-color 0.2s;
 }
 
@@ -60,12 +60,14 @@
 .letterItem.voted {
     color: black;
     background-color: #d3e4ff;
+    border: 1px solid #d3e4ff;
     cursor: default;
 }
 
 .letterItem.selected {
     color: white;
     background-color: #4c91ff;
+    border: 1px solid #4c91ff;
 }
 
 .nextRound {

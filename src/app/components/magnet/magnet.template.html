@@ -1,5 +1,5 @@
 <div class="magnet"
-    [ngClass]="{'dragging': status.drag, 'ready': status.ready, 'loading': status.loading, 'hidden': status.hidden, 'animation': status.animation, 'initied': status.initied}"
+    [ngClass]="{'dragging': status.drag, 'ready': status.ready, 'loading': status.loading, 'hidden': status.hidden, 'animation': status.animation, 'initied': status.initied, 'dying': status.dying}"
     [ngStyle]="{'left.%': coordinates[0], 'top.%': coordinates[1], 'width.%': svg.width, 'height.%': svg.height}"
     (mousedown)="mouseDown($event)"
     (window:mousemove)="mouseMove($event)"
@@ -14,6 +14,6 @@
             <svg:feMergeNode in="SourceGraphic"/>
           </svg:feMerge>
         </svg:filter>
-        <svg:path class="path" [ngStyle]="{'fill': status.dying ? 'grey' : magnet.color, 'filter': 'url(#dropshadow' + magnet.id + ')'}" [attr.d]="svg.path"/>
+        <svg:path class="path" [ngStyle]="{'fill': magnet.color, 'filter': 'url(#dropshadow' + magnet.id + ')'}" [attr.d]="svg.path"/>
     </svg>
 <div>
