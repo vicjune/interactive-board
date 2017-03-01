@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 
 import { FirebaseService } from './../../services/firebase.service';
 import { ErrorService } from './../../services/error.service';
@@ -43,6 +43,7 @@ export class MagnetComponent implements OnInit, OnDestroy {
     @Input() darkMode: boolean;
     @Output() destroy = new EventEmitter();
     @Output() ready = new EventEmitter();
+    @ViewChild('magnet') magnetRef: ElementRef;
 
     private subscription;
     private lastMagnetSubscription;
@@ -113,15 +114,15 @@ export class MagnetComponent implements OnInit, OnDestroy {
     mouseDown(e) {
         if (!this.status.drag && !this.status.loading && !this.status.animation) {
             this.status.drag = true;
-            this.mouseOffset = [e.offsetX, e.offsetY];
-            this.coordinates = [this.toPercentage(e.pageX - e.offsetX - this.board.left, 'x'), this.toPercentage(e.pageY - e.offsetY - this.board.top, 'y')];
+            this.mouseOffset = [this.convertEvent(e).offsetX, this.convertEvent(e).offsetY];
+            this.coordinates = [this.toPercentage(this.convertEvent(e).pageX - this.mouseOffset[0] - this.board.left, 'x'), this.toPercentage(this.convertEvent(e).pageY - this.mouseOffset[1] - this.board.top, 'y')];
         }
     }
 
     mouseMove(e) {
         if (this.status.drag) {
-            let x = this.toPercentage(e.pageX - this.mouseOffset[0] - this.board.left, 'x');
-            let y = this.toPercentage(e.pageY - this.mouseOffset[1] - this.board.top, 'y');
+            let x = this.toPercentage(this.convertEvent(e).pageX - this.mouseOffset[0] - this.board.left, 'x');
+            let y = this.toPercentage(this.convertEvent(e).pageY - this.mouseOffset[1] - this.board.top, 'y');
             if (x > 0 && x + this.svg.width < 100 && y > 0 && y + this.svg.height < 100) {
                 this.coordinates = [x, y];
             }
@@ -132,6 +133,25 @@ export class MagnetComponent implements OnInit, OnDestroy {
         if (this.status.drag) {
             this.status.drag = false;
             this.sendCoordinates();
+        }
+    }
+
+    private convertEvent(event) {
+        if ('targetTouches' in event) {
+            let bouncingRect = this.magnetRef.nativeElement.getBoundingClientRect();
+            return {
+                pageX: event.targetTouches[0].pageX,
+                pageY: event.targetTouches[0].pageY,
+                offsetX: event.targetTouches[0].pageX - bouncingRect.left,
+                offsetY: event.targetTouches[0].pageY - bouncingRect.top
+            };
+        } else {
+            return {
+                pageX: event.pageX,
+                pageY: event.pageY,
+                offsetX: event.offsetX,
+                offsetY: event.offsetY
+            }
         }
     }
 
