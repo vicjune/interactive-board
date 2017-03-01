@@ -143,7 +143,7 @@ function startListeners() {
                     availableColors = postSnapshot.val();
                 } else {
                     colorsRefListener = false;
-                    availableColors = ['red', 'green', 'orange'];
+                    availableColors = ['red', 'green', 'orange', blue, pink, purple];
                     colorsRef.set(availableColors).then(() => {
                         colorsRefListener = true;
                     });
