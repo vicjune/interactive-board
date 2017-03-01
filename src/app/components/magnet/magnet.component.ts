@@ -113,6 +113,7 @@ export class MagnetComponent implements OnInit, OnDestroy {
 
     mouseDown(e) {
         if (!this.status.drag && !this.status.loading && !this.status.animation) {
+            e.preventDefault();
             this.status.drag = true;
             this.mouseOffset = [this.convertEvent(e).offsetX, this.convertEvent(e).offsetY];
             this.coordinates = [this.toPercentage(this.convertEvent(e).pageX - this.mouseOffset[0] - this.board.left, 'x'), this.toPercentage(this.convertEvent(e).pageY - this.mouseOffset[1] - this.board.top, 'y')];
@@ -121,6 +122,7 @@ export class MagnetComponent implements OnInit, OnDestroy {
 
     mouseMove(e) {
         if (this.status.drag) {
+            e.preventDefault();
             let x = this.toPercentage(this.convertEvent(e).pageX - this.mouseOffset[0] - this.board.left, 'x');
             let y = this.toPercentage(this.convertEvent(e).pageY - this.mouseOffset[1] - this.board.top, 'y');
             if (x > 0 && x + this.svg.width < 100 && y > 0 && y + this.svg.height < 100) {
