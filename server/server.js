@@ -24,6 +24,7 @@ let magnetsRef = firebase.database().ref('/magnets');
 let dyingMagnetsRef = firebase.database().ref('/dyingMagnets');
 
 let magnetsInOrder = [];
+let magnetsProcessing = [];
 let localLettersList = [];
 
 let lettersRefListener = true;
@@ -201,13 +202,18 @@ function handleLetter(firebaseLetter) {
 }
 
 function handleMagnet(firebaseMagnet) {
-    firebase.database().ref('/magnets/' + firebaseMagnet.key).update({
-        timestamp: + new Date()
-    });
+    if (magnetsProcessing.indexOf(firebaseMagnet.key) === -1) {
+        magnetsProcessing.push(firebaseMagnet.key);
+        firebase.database().ref('/magnets/' + firebaseMagnet.key).update({
+            timestamp: + new Date()
+        }).then(() => {
+            magnetsProcessing.splice(magnetsProcessing.indexOf(firebaseMagnet.key), 1);
+        });
 
-    // Put modified magnet at the end of the array
-    magnetsInOrder.push(magnetsInOrder.splice(magnetsInOrder.indexOf(firebaseMagnet.key), 1)[0]);
-    setDyingMagnets();
+        // Put modified magnet at the end of the array
+        magnetsInOrder.push(magnetsInOrder.splice(magnetsInOrder.indexOf(firebaseMagnet.key), 1)[0]);
+        setDyingMagnets();
+    }
 }
 
 function setDyingMagnets() {
