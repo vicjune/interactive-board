@@ -10,6 +10,7 @@ import { ErrorService } from './services/error.service'
 import { BoardComponent } from './components/board/board.component';
 import { ConsoleComponent } from './components/console/console.component';
 import { MagnetComponent } from './components/magnet/magnet.component';
+import { StreamComponent } from './components/stream/stream.component';
 import { TimeLeftPipe } from './pipes/timeLeft.pipe';
 
 export const firebaseConfig = {
@@ -26,6 +27,7 @@ export const firebaseConfig = {
         BoardComponent,
         MagnetComponent,
         ConsoleComponent,
+        StreamComponent,
         TimeLeftPipe
     ],
     imports: [

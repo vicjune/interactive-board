@@ -41,3 +41,7 @@ Thumbs.db
 
 #Firebase admin
 interactive-board-account.json
+
+#Firebase hosting
+firebase.json
+.firebaserc
