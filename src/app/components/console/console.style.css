@@ -19,6 +19,7 @@
     text-align: center;
     opacity: 0;
     transition: opacity 0.5s;
+    z-index: 1;
 }
 
 .error.displayed {
@@ -86,11 +87,12 @@
     height: 100px;
     margin: 20px auto 0;
     border-radius: 50%;
-    transition: opacity 1s;
+    transition: opacity 1s, height 1s;
 }
 
 .percentage.hidden {
     opacity: 0;
+    height: 0;
 }
 
 .percentageTimeLeft {

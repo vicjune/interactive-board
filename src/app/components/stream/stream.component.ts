@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-let JSMpeg = (<any>window).JSMpeg;
 
 import { ErrorService } from './../../services/error.service';
 
@@ -14,11 +13,12 @@ export class StreamComponent implements OnInit {
         private ErrorService: ErrorService
     ) {}
 
+    serverUrl: string;
+    jsmpegPlayer: any;
     @ViewChild('canvas') canvasRef: ElementRef;
 
     ngOnInit(): void {
-        let url = 'ws://192.168.1.138:8082/';
-
-        new JSMpeg.Player(url, {canvas: this.canvasRef.nativeElement});
+        this.serverUrl = 'ws://192.168.1.138:8082/';
+        this.jsmpegPlayer = new (<any>window).JSMpeg.Player(this.serverUrl, {canvas: this.canvasRef.nativeElement});
     }
 }
