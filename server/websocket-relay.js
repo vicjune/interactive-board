@@ -3,6 +3,7 @@
 // Example:
 // node websocket-relay yoursecret 8081 8082
 // ffmpeg -i <some input> -f mpegts http://localhost:8081/yoursecret
+// ffmpeg -r 25 -i <source> -f mpegts -codec:v mpeg1video -s 640x480 -b:v 1000k -bf 0 http://<serverIp>:8081/<yoursecret>
 
 var fs = require('fs'),
 	http = require('http'),
