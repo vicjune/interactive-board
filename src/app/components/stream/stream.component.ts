@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 
 import { ErrorService } from './../../services/error.service';
+import { FirebaseService } from './../../services/firebase.service';
 
 @Component({
     moduleId: module.id,
@@ -8,17 +9,47 @@ import { ErrorService } from './../../services/error.service';
     templateUrl: 'stream.template.html',
     styleUrls: ['stream.style.css']
 })
-export class StreamComponent implements OnInit {
+export class StreamComponent implements OnInit, OnDestroy {
     constructor(
-        private ErrorService: ErrorService
+        private ErrorService: ErrorService,
+        private FirebaseService: FirebaseService
     ) {}
 
     serverUrl: string;
     jsmpegPlayer: any;
+    interval: any = false;
+    offline: boolean = false;
+    loading: boolean = true;
+    oldTime: number = 0;
     @ViewChild('canvas') canvasRef: ElementRef;
 
     ngOnInit(): void {
-        this.serverUrl = 'ws://192.168.1.138:8082/';
-        this.jsmpegPlayer = new (<any>window).JSMpeg.Player(this.serverUrl, {canvas: this.canvasRef.nativeElement});
+        this.FirebaseService.bindServerIpObject().subscribe(ip => {
+            if (this.jsmpegPlayer) {
+                this.jsmpegPlayer.destroy();
+            }
+            this.jsmpegPlayer = new (<any>window).JSMpeg.Player('ws://' + ip.$value + '/', {canvas: this.canvasRef.nativeElement});
+
+            if (!this.interval) {
+                this.interval = setInterval(() => {
+                    this.checkOffline();
+                }, 1000);
+            }
+
+            this.loading = false;
+        });
+    }
+
+    ngOnDestroy(): void {
+        clearInterval(this.interval);
+    }
+
+    private checkOffline(): void{
+        if (this.jsmpegPlayer.currentTime === this.oldTime) {
+            this.offline = true;
+        } else {
+            this.oldTime = this.jsmpegPlayer.currentTime;
+            this.offline = false;
+        }
     }
 }

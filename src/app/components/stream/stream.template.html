@@ -1,1 +1,4 @@
-<canvas #canvas class="canvas" [ngClass]="{'started': true}"></canvas>
+<div class="canvasWrapper">
+    <canvas #canvas class="canvas" [ngClass]="{'started': jsmpegPlayer && jsmpegPlayer.currentTime > 0}"></canvas>
+    <div class="offlineMessage" *ngIf="offline && !loading">The video stream seems offline :/</div>
+</div>

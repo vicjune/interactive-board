@@ -9,6 +9,10 @@ export class FirebaseService {
         return this.af.database.object('/status');
     }
 
+    bindServerIpObject(): FirebaseObjectObservable<any>{
+        return this.af.database.object('/serverIp');
+    }
+
     bindDyingMagnetsObject(): FirebaseObjectObservable<any>{
         return this.af.database.object('/dyingMagnets');
     }
