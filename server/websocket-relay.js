@@ -1,26 +1,22 @@
 // Use the websocket-relay to serve a raw MPEG-TS over WebSockets. You can use
 // ffmpeg to feed the relay. ffmpeg -> websocket-relay -> browser
 // Example:
-// node websocket-relay yoursecret 8081 8082
 // ffmpeg -i <some input> -f mpegts http://localhost:8081/yoursecret
 // ffmpeg -r 25 -i <source> -f mpegts -codec:v mpeg1video -s 640x480 -b:v 1000k -bf 0 http://<serverIp>:8081/<yoursecret>
 
+// REQUIRED FILE: config.json
+// REQUIRED FILE: websocket-secret.json - Content example: "secret"
+
 var fs = require('fs'),
 	http = require('http'),
-	WebSocket = require('ws');
+	WebSocket = require('ws'),
+    config = require('./config.json'),
+    secret = require('./websocket-secret.json');
 
-if (process.argv.length < 3) {
-	console.log(
-		'Usage: \n' +
-		'node websocket-relay.js <secret> [<stream-port> <websocket-port>]'
-	);
-	process.exit();
-}
-
-var STREAM_SECRET = process.argv[2],
-	STREAM_PORT = process.argv[3] || 8081,
-	WEBSOCKET_PORT = process.argv[4] || 8082,
-	RECORD_STREAM = false;
+var STREAM_SECRET = secret,
+	STREAM_PORT = config.streamPort || 8081,
+	WEBSOCKET_PORT = config.websocketPort || 8082,
+	RECORD_STREAM = config.recordStream || false;
 
 // Websocket Server
 var socketServer = new WebSocket.Server({port: WEBSOCKET_PORT, perMessageDeflate: false});
@@ -86,5 +82,5 @@ var streamServer = http.createServer( function(request, response) {
 	}
 }).listen(STREAM_PORT);
 
-console.log('Listening for incomming MPEG-TS Stream on http://127.0.0.1:'+STREAM_PORT+'/<secret>');
-console.log('Awaiting WebSocket connections on ws://127.0.0.1:'+WEBSOCKET_PORT+'/');
+console.log('Listening for incomming MPEG-TS Stream on http://<server-ip>:'+STREAM_PORT+'/'+secret);
+console.log('Awaiting WebSocket connections on ws://<server-ip>:'+WEBSOCKET_PORT+'/');

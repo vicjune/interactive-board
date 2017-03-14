@@ -39,6 +39,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+#Server
+websocket-secret.json
+
 #Firebase admin
 interactive-board-account.json
 
