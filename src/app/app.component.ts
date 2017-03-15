@@ -9,7 +9,8 @@ export class AppComponent implements OnInit {
     darkMode: boolean = false;
 
     ngOnInit() {
-        // this.darkMode = true;
-        console.log(navigator);
+        if (navigator.platform.includes('Linux armv')) {
+            this.darkMode = true;
+        }
     }
 }
