@@ -10,5 +10,6 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         // this.darkMode = true;
+        console.log(navigator);
     }
 }
