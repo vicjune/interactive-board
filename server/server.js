@@ -68,7 +68,7 @@ function setupFirebase() {
     });
 
     serverIpRef.once('value', payload => {
-        if (!(payload.exists()) {
+        if (!(payload.exists())) {
             statusRef.set('192.168.1.0:8082');
             console.log('Server ip setted');
         }
