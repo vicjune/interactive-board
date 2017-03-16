@@ -33,7 +33,7 @@ export class StreamComponent implements OnInit, OnDestroy {
             if (!this.interval) {
                 this.interval = setInterval(() => {
                     this.checkOffline();
-                }, 1000);
+                }, 3000);
             }
 
             this.loading = false;

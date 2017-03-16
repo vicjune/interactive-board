@@ -41,6 +41,8 @@ Thumbs.db
 
 #Server
 websocket-secret.json
+webcam.log
+webcam_pid.txt
 
 #Firebase admin
 interactive-board-account.json

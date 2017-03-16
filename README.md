@@ -1,5 +1,9 @@
 # InteractiveBoard
 
+## Client
+
+Run `npm install -g @angular/cli`
+
 ## Angular CLI
 This project require Node 6.9.0 or higher, together with NPM 3 or higher.
 Install Angular CLI with `npm install -g @angular/cli`.
