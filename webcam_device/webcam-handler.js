@@ -11,6 +11,9 @@ ffmpeg('/dev/video0')
     .size('640x480')
     .on('start', function(commandLine) {
         console.log('Spawned Ffmpeg with command: ' + commandLine);
+    })
+    .on('codecData', function(data) {
+        console.log('Input is ' + data.audio + ' audio ' + 'with ' + data.video + ' video');
     });
 
 console.log('started');
