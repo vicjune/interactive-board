@@ -2,7 +2,7 @@
 
 ## Client
 ### Installation
-Run the following `cmd`:
+Go to folder `interactive-board/client`, then run:
 ```bash
 npm install
 ```
@@ -14,29 +14,29 @@ npm install -g @angular/cli
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ### Build
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `ng build` to build the project. The build artifacts will be stored in the `interactive-board/client/dist/` directory. Use the `-prod` flag for a production build.
 
 ## Firebase Server
 ### Installation
-Run the following `cmd`:
+Go to folder `interactive-board/firebase_server`, then run:
 ```bash
 npm install
 ```
-Add Service Account from Google as `server/interactive-board-account.json`.
+Add Service Account from Google as `interactive-board/firebase_server/interactive-board-account.json`.
 
 ### Run server
 Run the following `cmd`:
 ```bash
-node server/server.js
+node server.js
 ```
 
 ## Webcam Server
 ### Installation
-Run the following `cmd`:
+Go to folder `interactive-board/websocket_server`, then run:
 ```bash
 npm install
 ```
-Create `server/websocket-secret.json`, open it and add your secret stream password, like so:
+Create `interactive-board/websocket_server/websocket-secret.json`, open it and add your secret stream password, like so:
 ```bash
 "secret"
 ```
@@ -44,19 +44,19 @@ Create `server/websocket-secret.json`, open it and add your secret stream passwo
 ### Run server
 Run the following `cmd`:
 ```bash
-node server/websocket-relay.js
+node websocket-relay.js
 ```
 
-## Webcam Source
+## Webcam Device
 ### Installation
 Install `ffmpeg`.  
 
-Run the following `cmd`:
+Go to folder `interactive-board/webcam_device`, then run:
 ```bash
 chmod +x server/webcam.sh
 chmod +x server/webcam_stop.sh
 ```
-Create `server/webcam_serverIp.txt`, open it and add the Webcam Server ip followed by your secret stream password, like so:
+Create `interactive-board/webcam_device/webcam_serverIp.txt`, open it and add the Webcam Server ip followed by your secret stream password, like so:
 ```bash
 http://127.0.0.1:8081/secret
 ```
@@ -64,11 +64,11 @@ http://127.0.0.1:8081/secret
 ### Start webcam stream
 Run the following `cmd`:
 ```bash
-./server/webcam.sh
+./webcam.sh
 ```
 
 ### Stop webcam stream
 Run the following `cmd`:
 ```bash
-./server/webcam_stop.sh
+./webcam_stop.sh
 ```
