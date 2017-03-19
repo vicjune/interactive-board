@@ -17,17 +17,58 @@ var fs = require('fs'),
 var STREAM_SECRET = secret,
 	STREAM_PORT = config.streamPort || 8081,
 	WEBSOCKET_PORT = config.websocketPort || 8082,
-	RECORD_STREAM = config.recordStream || false;
+	RECORD_STREAM = config.recordStream || false,
+    openHour = [],
+    closeHour = [],
+    openDays = [];
 
 firebase.initializeApp({
     apiKey: "AIzaSyCcqVCaKizJ-HvqQaHQ86HUlZpdGVGCWPU",
     authDomain: "interactive-board-999c5.firebaseapp.com",
     databaseURL: "https://interactive-board-999c5.firebaseio.com",
-    storageBucket: "interactive-board-999c5.appspot.com",
-    messagingSenderId: "131912489396"
+    storageBucket: "interactive-board-999c5.appspot.com"
 });
 
-var streamHoursRef = firebase.database().ref('/streamHours');
+var hoursFormatRegEx = /([01]?[0-9]|2[0-3]):[0-5][0-9]/;
+firebase.database().ref('/streamHours').on('value', function(payload) {
+    var streamHours = payload.val();
+    openHour = [];
+    closeHour = [];
+    openDays = [];
+    if (hoursFormatRegEx.test(streamHours.open) && hoursFormatRegEx.test(streamHours.close)) {
+        openHour = [parseInt(streamHours.open.split(':')[0]), parseInt(streamHours.open.split(':')[1])];
+        closeHour = [parseInt(streamHours.close.split(':')[0]), parseInt(streamHours.close.split(':')[1])];
+    }
+
+    for (var day in streamHours.daysOpen) {
+        if (streamHours.daysOpen.hasOwnProperty(day) && streamHours.daysOpen[day]) {
+            switch(day) {
+                case 'monday':
+                    openDays.push(1);
+                    break;
+                case 'tuesday':
+                    openDays.push(2);
+                    break;
+                case 'wednesday':
+                    openDays.push(3);
+                    break;
+                case 'thursday':
+                    openDays.push(4);
+                    break;
+                case 'friday':
+                    openDays.push(5);
+                    break;
+                case 'saturday':
+                    openDays.push(6);
+                    break;
+                case 'sunday':
+                    openDays.push(0);
+                    break;
+            }
+        }
+    }
+});
+
 
 // Websocket Server
 var socketServer = new WebSocket.Server({port: WEBSOCKET_PORT, perMessageDeflate: false});
@@ -48,12 +89,19 @@ socketServer.on('connection', function(socket) {
 	});
 });
 socketServer.broadcast = function(data) {
-	socketServer.clients.forEach(function each(client) {
-		if (client.readyState === WebSocket.OPEN) {
-			client.send(data);
-		}
-	});
+    var now = new Date();
+    if (openDays.indexOf(now.getDay()) >= 0 && (openHour.length === 0 || hourInInterval(now))) {
+    	socketServer.clients.forEach(function each(client) {
+    		if (client.readyState === WebSocket.OPEN) {
+    			client.send(data);
+    		}
+    	});
+    }
 };
+
+function hourInInterval(now) {
+    return (now.getHours() > openHour[0] && now.getHours() < closeHour[0]) || (now.getHours() === openHour[0] && now.getMinutes() >= openHour[1]) || (now.getHours() === closeHour[0] && now.getMinutes() < closeHour[1])
+}
 
 // HTTP Server to accept incomming MPEG-TS Stream from ffmpeg
 var streamServer = http.createServer( function(request, response) {
