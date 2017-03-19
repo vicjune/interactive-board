@@ -1,5 +1,5 @@
 <div class="canvasWrapper">
     <canvas #canvas class="canvas" [ngClass]="{'started': jsmpegPlayer && jsmpegPlayer.currentTime > 0}"></canvas>
     <div class="offlineMessage" *ngIf="!offline && !loading">Look at the result in our offices :)</div>
-    <div class="offlineMessage" *ngIf="offline && !loading">The video stream seems offline :/</div>
+    <div class="offlineMessage" *ngIf="offline && !loading">{{openingHours ? 'The stream seems offline :/' : 'The stream will be back at offices hours'}}</div>
 </div>

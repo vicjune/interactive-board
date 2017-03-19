@@ -13,6 +13,10 @@ export class FirebaseService {
         return this.af.database.object('/serverIp');
     }
 
+    bindStreamHoursObject(): FirebaseObjectObservable<any>{
+        return this.af.database.object('/streamHours');
+    }
+
     bindDyingMagnetsObject(): FirebaseObjectObservable<any>{
         return this.af.database.object('/dyingMagnets');
     }
