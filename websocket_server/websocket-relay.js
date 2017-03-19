@@ -27,7 +27,7 @@ firebase.initializeApp({
     messagingSenderId: "131912489396"
 });
 
-var openHoursRef = firebase.database().ref('/openHours');
+var streamHoursRef = firebase.database().ref('/streamHours');
 
 // Websocket Server
 var socketServer = new WebSocket.Server({port: WEBSOCKET_PORT, perMessageDeflate: false});

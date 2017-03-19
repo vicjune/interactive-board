@@ -20,7 +20,7 @@ let colorsRef = firebase.database().ref('/constants/availableColors');
 
 let statusRef = firebase.database().ref('/status');
 let serverIpRef = firebase.database().ref('/serverIp');
-let openHoursRef = firebase.database().ref('/openHours');
+let streamHoursRef = firebase.database().ref('/streamHours');
 let lettersRef = firebase.database().ref('/letters');
 let magnetsRef = firebase.database().ref('/magnets');
 let dyingMagnetsRef = firebase.database().ref('/dyingMagnets');
@@ -75,13 +75,13 @@ function setupFirebase() {
         }
     });
 
-    openHoursRef.once('value', payload => {
+    streamHoursRef.once('value', payload => {
         if (!(payload.exists() && 'open' in payload.val() && 'close' in payload.val())) {
-            statusRef.set({
+            streamHoursRef.set({
                 open: '',
                 close: ''
             });
-            console.log('Open hours setted');
+            console.log('Stream hours setted');
         }
     });
 }
