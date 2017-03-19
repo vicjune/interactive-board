@@ -75,12 +75,21 @@ function setupFirebase() {
         }
     });
 
+
     streamHoursRef.once('value', payload => {
         if (!(payload.exists() && 'open' in payload.val() && 'close' in payload.val() && 'daysOpen' in payload.val())) {
             streamHoursRef.set({
                 open: '',
                 close: '',
-                daysOpen: ''
+                daysOpen: {
+                    monday: true,
+                    tuesday: true,
+                    wednesday: true,
+                    thursday: true,
+                    friday: true,
+                    saturday: true,
+                    sunday: true
+                }
             });
             console.log('Stream hours setted');
         }
