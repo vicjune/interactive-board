@@ -20,6 +20,7 @@ let colorsRef = firebase.database().ref('/constants/availableColors');
 
 let statusRef = firebase.database().ref('/status');
 let serverIpRef = firebase.database().ref('/serverIp');
+let openHoursRef = firebase.database().ref('/openHours');
 let lettersRef = firebase.database().ref('/letters');
 let magnetsRef = firebase.database().ref('/magnets');
 let dyingMagnetsRef = firebase.database().ref('/dyingMagnets');
@@ -71,6 +72,16 @@ function setupFirebase() {
         if (!(payload.exists())) {
             statusRef.set('192.168.1.0:8082');
             console.log('Server ip setted');
+        }
+    });
+
+    openHoursRef.once('value', payload => {
+        if (!(payload.exists() && 'open' in payload.val() && 'close' in payload.val())) {
+            statusRef.set({
+                open: '',
+                close: ''
+            });
+            console.log('Open hours setted');
         }
     });
 }

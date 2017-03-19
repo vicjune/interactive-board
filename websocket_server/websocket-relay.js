@@ -9,7 +9,8 @@
 
 var fs = require('fs'),
 	http = require('http'),
-	WebSocket = require('ws'),
+    WebSocket = require('ws'),
+	firebase = require('firebase'),
     config = require('./config.json'),
     secret = require('./websocket-secret.json');
 
@@ -17,6 +18,16 @@ var STREAM_SECRET = secret,
 	STREAM_PORT = config.streamPort || 8081,
 	WEBSOCKET_PORT = config.websocketPort || 8082,
 	RECORD_STREAM = config.recordStream || false;
+
+firebase.initializeApp({
+    apiKey: "AIzaSyCcqVCaKizJ-HvqQaHQ86HUlZpdGVGCWPU",
+    authDomain: "interactive-board-999c5.firebaseapp.com",
+    databaseURL: "https://interactive-board-999c5.firebaseio.com",
+    storageBucket: "interactive-board-999c5.appspot.com",
+    messagingSenderId: "131912489396"
+});
+
+var openHoursRef = firebase.database().ref('/openHours');
 
 // Websocket Server
 var socketServer = new WebSocket.Server({port: WEBSOCKET_PORT, perMessageDeflate: false});
