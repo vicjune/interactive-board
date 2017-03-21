@@ -40,8 +40,10 @@ testem.log
 .DS_Store
 Thumbs.db
 
-#Server
-websocket-secret.json
+#Webcam server
+webcam-secret.json
+
+#Webcam device
 webcam.log
 webcam_pid.txt
 webcam_serverIp.txt

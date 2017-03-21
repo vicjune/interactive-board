@@ -32,11 +32,11 @@ node server.js
 
 ## Webcam Server
 ### Installation
-Go to folder `interactive-board/websocket_server`, then run:
+Go to folder `interactive-board/webcam_server`, then run:
 ```bash
 npm install
 ```
-Create `interactive-board/websocket_server/websocket-secret.json`, open it and add your secret stream password, like so:
+Create `interactive-board/websocket_server/webcam-secret.json`, open it and add your secret stream password, like so:
 ```bash
 "secret"
 ```
@@ -44,7 +44,7 @@ Create `interactive-board/websocket_server/websocket-secret.json`, open it and a
 ### Run server
 Run the following `cmd`:
 ```bash
-node websocket-relay.js
+node webcam-server.js
 ```
 
 ## Webcam Device
