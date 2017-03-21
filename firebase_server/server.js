@@ -80,101 +80,114 @@ function setupFirebase() {
         }
     });
 
-    streamHoursRef.once('value', payload => {
-        if (!(payload.exists() && 'open' in payload.val() && 'close' in payload.val() && 'daysOpen' in payload.val())) {
-            streamHoursRef.set({
-                open: '',
-                close: '',
-                daysOpen: {
-                    monday: true,
-                    tuesday: true,
-                    wednesday: true,
-                    thursday: true,
-                    friday: true,
-                    saturday: true,
-                    sunday: true
+
+
+
+
+    // Opening hours
+    let p1 = new Promise((resolve, reject) => {
+        streamHoursRef.once('value', payload => {
+            if (!(payload.exists() && 'open' in payload.val() && 'close' in payload.val() && 'daysOpen' in payload.val())) {
+                streamHoursRef.set({
+                    open: '',
+                    close: '',
+                    daysOpen: {
+                        monday: true,
+                        tuesday: true,
+                        wednesday: true,
+                        thursday: true,
+                        friday: true,
+                        saturday: true,
+                        sunday: true
+                    }
+                });
+                console.log('Stream hours setted');
+            }
+            resolve();
+        });
+    });
+
+    let p2 = new Promise((resolve, reject) => {
+        streamOpenRef.once('value', payload => {
+            if (!(payload.exists())) {
+                streamOpenRef.set(false);
+                console.log('Stream openning setted');
+            }
+            resolve();
+        });
+    });
+
+    Promise.all([p1, p2]).then(() => {
+        function hourInInterval(now) {
+            return (now.getHours() > openHour[0] && now.getHours() < closeHour[0]) || (now.getHours() === openHour[0] && now.getMinutes() >= openHour[1]) || (now.getHours() === closeHour[0] && now.getMinutes() < closeHour[1]);
+        }
+
+        function setStreamOpenningHours() {
+            let openHour;
+            let closeHour;
+            let openDays;
+            let hoursFormatRegEx = /([01]?[0-9]|2[0-3]):[0-5][0-9]/;
+
+            streamHoursRef.on('value', payload => {
+                let streamHours = payload.val();
+                openHour = [];
+                closeHour = [];
+                openDays = [];
+                if (hoursFormatRegEx.test(streamHours.open) && hoursFormatRegEx.test(streamHours.close)) {
+                    openHour = [parseInt(streamHours.open.split(':')[0]), parseInt(streamHours.open.split(':')[1])];
+                    closeHour = [parseInt(streamHours.close.split(':')[0]), parseInt(streamHours.close.split(':')[1])];
+                }
+
+                for (let day in streamHours.daysOpen) {
+                    if (streamHours.daysOpen.hasOwnProperty(day) && streamHours.daysOpen[day]) {
+                        switch(day) {
+                            case 'monday':
+                                openDays.push(1);
+                                break;
+                            case 'tuesday':
+                                openDays.push(2);
+                                break;
+                            case 'wednesday':
+                                openDays.push(3);
+                                break;
+                            case 'thursday':
+                                openDays.push(4);
+                                break;
+                            case 'friday':
+                                openDays.push(5);
+                                break;
+                            case 'saturday':
+                                openDays.push(6);
+                                break;
+                            case 'sunday':
+                                openDays.push(0);
+                                break;
+                        }
+                    }
                 }
             });
-            console.log('Stream hours setted');
+
+            setInterval(() => {
+                let now = new Date();
+                let streamOpen = openDays.indexOf(now.getDay()) >= 0 && (openHour.length === 0 || hourInInterval(now));
+                streamOpenRef.once('value', payload => {
+                    if (streamOpen !== payload.val()) {
+                        streamOpenRef.set(streamOpen);
+                    }
+                });
+            }, 1000);
         }
     });
 
-    streamOpenRef.once('value', payload => {
-        if (!(payload.exists())) {
-            streamOpenRef.set(false);
-            console.log('Stream openning setted');
-        }
-    });
+
+
+
+
+
+
+
+
 }
-
-
-
-
-
-// Opening hours
-function hourInInterval(now) {
-    return (now.getHours() > openHour[0] && now.getHours() < closeHour[0]) || (now.getHours() === openHour[0] && now.getMinutes() >= openHour[1]) || (now.getHours() === closeHour[0] && now.getMinutes() < closeHour[1]);
-}
-
-function setStreamOpenningHours() {
-    let openHour;
-    let closeHour;
-    let openDays;
-    let hoursFormatRegEx = /([01]?[0-9]|2[0-3]):[0-5][0-9]/;
-
-    streamHoursRef.on('value', payload => {
-        let streamHours = payload.val();
-        openHour = [];
-        closeHour = [];
-        openDays = [];
-        if (hoursFormatRegEx.test(streamHours.open) && hoursFormatRegEx.test(streamHours.close)) {
-            openHour = [parseInt(streamHours.open.split(':')[0]), parseInt(streamHours.open.split(':')[1])];
-            closeHour = [parseInt(streamHours.close.split(':')[0]), parseInt(streamHours.close.split(':')[1])];
-        }
-
-        for (let day in streamHours.daysOpen) {
-            if (streamHours.daysOpen.hasOwnProperty(day) && streamHours.daysOpen[day]) {
-                switch(day) {
-                    case 'monday':
-                        openDays.push(1);
-                        break;
-                    case 'tuesday':
-                        openDays.push(2);
-                        break;
-                    case 'wednesday':
-                        openDays.push(3);
-                        break;
-                    case 'thursday':
-                        openDays.push(4);
-                        break;
-                    case 'friday':
-                        openDays.push(5);
-                        break;
-                    case 'saturday':
-                        openDays.push(6);
-                        break;
-                    case 'sunday':
-                        openDays.push(0);
-                        break;
-                }
-            }
-        }
-    });
-
-    setInterval(() => {
-        let now = new Date();
-        let streamOpen = openDays.indexOf(now.getDay()) >= 0 && (openHour.length === 0 || hourInInterval(now));
-        streamOpenRef.once('value', payload => {
-            if (streamOpen !== payload.val()) {
-                streamOpenRef.set(streamOpen);
-            }
-        });
-    }, 1000);
-}
-
-
-
-
 
 function buildMagnetsOrderedList() {
     magnetsRef.orderByChild('timestamp').once('value', payload => {
