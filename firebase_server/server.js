@@ -41,6 +41,10 @@ let drawTimeout = null;
 
 let serverNextDraw = 0;
 
+let openHour;
+let closeHour;
+let openDays;
+
 let resettedLettersList = {};
 for (let letter of letters) {
     resettedLettersList[letter] = false;
@@ -127,9 +131,6 @@ function hourInInterval(now) {
 }
 
 function setStreamOpenningHours() {
-    let openHour;
-    let closeHour;
-    let openDays;
     let hoursFormatRegEx = /([01]?[0-9]|2[0-3]):[0-5][0-9]/;
 
     streamHoursRef.on('value', payload => {
