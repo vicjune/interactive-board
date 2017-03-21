@@ -1,7 +1,5 @@
-// Use the websocket-relay to serve a raw MPEG-TS over WebSockets. You can use
-// ffmpeg to feed the relay. ffmpeg -> websocket-relay -> browser
+// Use this server to serve a raw MPEG-TS over WebSockets. You can use ffmpeg to feed the server.
 // Example:
-// ffmpeg -i <some input> -f mpegts http://localhost:8081/yoursecret
 // ffmpeg -r 25 -i <source> -f mpegts -codec:v mpeg1video -s 640x480 -b:v 1000k -bf 0 http://<serverIp>:8081/<yoursecret>
 
 // REQUIRED FILE: webcam-secret.json - Content example: "secret"
@@ -25,7 +23,7 @@ var socketServer,
     streamOpen = false;
 
 firebase.database().ref('/streamOpen').on('value', function(payload) {
-    streamOpen = payload.val();
+    streamOpen = payload.val() === true ? true : false;
 });
 
 firebase.database().ref('/server').on('value', function(payload) {
@@ -92,6 +90,6 @@ firebase.database().ref('/server').on('value', function(payload) {
         });
     }).listen(streamPort);
 
-    console.log('Listening for incomming MPEG-TS Stream on http://<server-ip>:'+streamPort+'/'+secret);
+    console.log('Listening for incomming MPEG-TS Stream on http://<server-ip>:'+streamPort+'/'+streamSecret);
     console.log('Awaiting WebSocket connections on ws://<server-ip>:'+websocketPort+'/');
 });
