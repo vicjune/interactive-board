@@ -36,7 +36,7 @@ Go to folder `interactive-board/webcam_server`, then run:
 ```bash
 npm install
 ```
-Create `interactive-board/websocket_server/webcam-secret.json`, open it and add your secret stream password, like so:
+Create `interactive-board/webcam_server/webcam-secret.json`, open it and add your secret stream password, like so:
 ```bash
 "secret"
 ```
@@ -50,25 +50,22 @@ node webcam-server.js
 ## Webcam Device
 ### Installation
 Install `ffmpeg`.  
+Install `cec` with command:
+```bash
+sudo apt-get install cec-utils
+```
 
 Go to folder `interactive-board/webcam_device`, then run:
 ```bash
-chmod +x server/webcam.sh
-chmod +x server/webcam_stop.sh
+npm install
 ```
-Create `interactive-board/webcam_device/webcam_serverIp.txt`, open it and add the Webcam Server ip followed by your secret stream password, like so:
+Create `interactive-board/webcam_device/webcam-secret.json`, open it and add your secret stream password, like so:
 ```bash
-http://127.0.0.1:8081/secret
-```
-
-### Start webcam stream
-Run the following `cmd`:
-```bash
-./webcam.sh
+"secret"
 ```
 
-### Stop webcam stream
+### Start webcam and TV handler
 Run the following `cmd`:
 ```bash
-./webcam_stop.sh
+node webcam-tv-handler.js
 ```
