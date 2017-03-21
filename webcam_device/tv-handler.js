@@ -15,7 +15,7 @@ firebase.database().ref('/streamOpen').on('value', function(payload) {
         if (error === null) {
             let n = stdout.indexOf("power status:");
             let status_temp = stdout.substring(n+13, n+28);
-            let status = status_temp.substring(0, status_temp.indexOf("D")-1);
+            let status = status_temp.substring(0, status_temp.indexOf("D")-1).trim();
             if (status === 'on' && !streamOpen) {
                 turnTv('standby');
             }
