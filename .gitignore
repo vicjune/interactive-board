@@ -40,13 +40,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
-#Webcam server
+#Webcam
 webcam-secret.json
-
-#Webcam device
-webcam.log
-webcam_pid.txt
-webcam_serverIp.txt
 
 #Firebase admin
 interactive-board-account.json
