@@ -26,6 +26,14 @@ firebase.database().ref('/streamOpen').on('value', function(payload) {
             console.log('exec error: ' + error);
         }
     });
+
+    exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 `cat /home/pi/Projects/interactive-board/webcam_device/webcam_serverIp.txt` > /home/pi/Projects/interactive-board/webcam_device/webcam.log', (error, stdout, stderr) => {
+        if (error === null) {
+            console.log('ok');
+        } else {
+            console.log('exec error: ' + error);
+        }
+    });
 });
 
 function turnTv (newStatus) {
