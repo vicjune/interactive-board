@@ -11,34 +11,42 @@ firebase.initializeApp({
     storageBucket: "interactive-board-999c5.appspot.com"
 });
 
-let webcamExec = false;
+let webcamExec = null;
+let interval = null;
+let streamOpen = false;
 
 firebase.database().ref('/server').on('value', server => {
-    firebase.database().ref('/streamOpen').on('value', payload => {
-        streamOpen = payload.val() === true ? true : false;
-
-        exec('echo "pow 0" | cec-client -s', (error, stdout, stderr) => {
-            if (error === null) {
-                let n = stdout.indexOf("power status:");
-                let status_temp = stdout.substring(n+13, n+28);
-                let status = status_temp.substring(0, status_temp.indexOf("D")-1).trim();
-                if (status === 'on' && !streamOpen) {
-                    turnTv('standby');
-                }
-                if (status === 'standby' && streamOpen) {
-                    turnTv('on');
-                }
-            } else {
-                console.log('exec error: ' + error);
-            }
-        });
-
-        if (streamOpen && !webcamExec) {
+    if (interval) {
+        clearInterval(interval);
+    }
+    interval = setInterval(() => {
+        if (streamOpen && webcamExec === null) {
             webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
                 if (error !== null) {
                     console.log('exec error: ' + error);
                 }
+                webcamExec = null;
             });
+        }
+    }, 60000);
+});
+
+firebase.database().ref('/streamOpen').on('value', payload => {
+    streamOpen = payload.val() === true ? true : false;
+
+    exec('echo "pow 0" | cec-client -s', (error, stdout, stderr) => {
+        if (error === null) {
+            let n = stdout.indexOf("power status:");
+            let status_temp = stdout.substring(n+13, n+28);
+            let status = status_temp.substring(0, status_temp.indexOf("D")-1).trim();
+            if (status === 'on' && !streamOpen) {
+                turnTv('standby');
+            }
+            if (status === 'standby' && streamOpen) {
+                turnTv('on');
+            }
+        } else {
+            console.log('exec error: ' + error);
         }
     });
 });
