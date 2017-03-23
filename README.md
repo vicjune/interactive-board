@@ -104,6 +104,15 @@ Add those lines to the file:
 @xset s noblank
 @unclutter -idle 0.1 -root
 ```
+Open `/etc/lightdm/lightdm.conf`.  
+Edit this line:
+```bash
+#xserver-command=X
+```
+in:
+```bash
+xserver-command=X -s 0 -dpms
+```
 Manually open Chromium at least once on desktop.  
 Then reboot.
 
