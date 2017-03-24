@@ -383,7 +383,9 @@ function createMagnet(type) {
     magnetsRef.push({
         type: type,
         color: availableColors[Math.floor(Math.random() * availableColors.length)],
-        timestamp: + new Date()
+        timestamp: + new Date(),
+        x: Math.random() * (90 - 5) + 5,
+        y: Math.random() * (90 - 5) + 5
     });
 
     buildMagnetsOrderedList();
