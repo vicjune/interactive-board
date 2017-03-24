@@ -24,15 +24,19 @@ firebase.database().ref('/server').once('value', server => {
 
 function startWebcam(server) {
     console.log('--------startWebcam');
-    webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
-        webcamExec = null;
-        console.log('--------setTimeout');
-        timeout = setTimeout(() => {
-            console.log('--------start again');
-            timeout = null;
-            arguments.callee(server);
-        }, 10000);
-    });
+    if (webcamExec !== null) {
+        webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
+            if (error !== null) {
+                webcamExec = null;
+                console.log('--------setTimeout');
+                timeout = setTimeout(() => {
+                    console.log('--------start again');
+                    timeout = null;
+                    arguments.callee(server);
+                }, 10000);
+            }
+        });
+    }
 }
 
 
