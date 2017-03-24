@@ -15,7 +15,7 @@ firebase.initializeApp({
 // let interval = null;
 let streamOpen = false;
 
-firebase.database().ref('/server').on('value', server => {
+firebase.database().ref('/server').once('value', server => {
     startWebcam(server);
 });
 
@@ -28,7 +28,7 @@ function startWebcam(server) {
         console.log('--------setTimeout');
         setTimeOut(() => {
             console.log('--------start again');
-            startWebcam();
+            arguments.callee(server);
         }, 10000);
     });
 }
