@@ -19,11 +19,7 @@ firebase.database().ref('/server').on('value', server => {
     if (timeout !== null) {
         clearTimeout(timeout);
     }
-    // if (webcamExec !== null) {
-    //     webcamExec.stdin.write('q');
-    //     webcamExec = null;
-    //     console.log('----------killed webcam');
-    // }
+
     startWebcam(server);
 });
 
@@ -35,10 +31,9 @@ function startWebcam(server) {
             webcamExec = null;
             console.log('--------setTimeout');
             timeout = setTimeout(() => {
-                console.log('--------start again');
                 timeout = null;
                 arguments.callee(server);
-            }, 10000);
+            }, 60000);
         });
     }
 }
