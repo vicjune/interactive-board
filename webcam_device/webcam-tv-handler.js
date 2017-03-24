@@ -21,6 +21,8 @@ firebase.database().ref('/server').once('value', server => {
     }
     if (webcamExec !== null) {
         webcamExec.stdin.write('q');
+        webcamExec = null;
+        console.log('----------killed webcam');
     }
     startWebcam(server);
 });
