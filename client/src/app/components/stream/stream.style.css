@@ -26,6 +26,10 @@
     z-index: 1;
 }
 
+.ileotechLogo:hover {
+    opacity: 0.6;
+}
+
 .ileotechLogo svg {
     width: 100%;
 }
