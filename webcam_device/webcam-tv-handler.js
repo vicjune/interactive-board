@@ -62,6 +62,7 @@ firebase.database().ref('/streamOpen').on('value', payload => {
         }
         if (!streamOpen && webcamExec !== null) {
             webcamExec.kill();
+            webcamExec = null;
             console.log('------------------kill stream');
         }
     });
