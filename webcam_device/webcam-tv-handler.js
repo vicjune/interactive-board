@@ -27,6 +27,7 @@ function startWebcam(server) {
         console.log('--------startWebcam');
         webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
             if (error !== null) {
+                console.log(error);
                 webcamExec = null;
                 console.log('--------setTimeout');
                 timeout = setTimeout(() => {
