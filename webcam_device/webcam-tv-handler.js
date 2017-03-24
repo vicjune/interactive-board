@@ -19,11 +19,11 @@ firebase.database().ref('/server').on('value', server => {
     if (timeout !== null) {
         clearTimeout(timeout);
     }
-    if (webcamExec !== null) {
-        webcamExec.stdin.write('q');
-        webcamExec = null;
-        console.log('----------killed webcam');
-    }
+    // if (webcamExec !== null) {
+    //     webcamExec.stdin.write('q');
+    //     webcamExec = null;
+    //     console.log('----------killed webcam');
+    // }
     startWebcam(server);
 });
 
@@ -62,24 +62,6 @@ firebase.database().ref('/streamOpen').on('value', payload => {
             console.log('exec error: ' + error);
         }
     });
-
-    // firebase.database().ref('/server').on('value', server => {
-    //     if (streamOpen && webcamExec === null) {
-    //         console.log('------------------start stream');
-    //         webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
-    //             if (error !== null) {
-    //                 console.log('exec error: ' + error);
-    //             }
-    //             webcamExec = null;
-    //             console.log('---------------end of stream');
-    //         });
-    //     }
-    //     if (!streamOpen && webcamExec !== null) {
-    //         webcamExec.kill();
-    //         webcamExec = null;
-    //         console.log('------------------kill stream');
-    //     }
-    // });
 });
 
 function turnTv (newStatus) {
