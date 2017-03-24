@@ -11,23 +11,25 @@ firebase.initializeApp({
     storageBucket: "interactive-board-999c5.appspot.com"
 });
 
-// let webcamExec = null;
-// let interval = null;
+let webcamExec = null;
+let timeout = null;
 let streamOpen = false;
 
 firebase.database().ref('/server').once('value', server => {
+    if (timeout !== null) {
+        clearTimeout(timeout);
+    }
     startWebcam(server);
 });
 
 function startWebcam(server) {
     console.log('--------startWebcam');
     webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
-        if (error !== null) {
-            console.log('exec error: ' + error);
-        }
+        webcamExec = null;
         console.log('--------setTimeout');
-        setTimeout(() => {
+        timeout = setTimeout(() => {
             console.log('--------start again');
+            timeout = null;
             arguments.callee(server);
         }, 10000);
     });
