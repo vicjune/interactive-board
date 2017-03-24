@@ -26,7 +26,7 @@ function startWebcam(server) {
             console.log('exec error: ' + error);
         }
         console.log('--------setTimeout');
-        setTimeOut(() => {
+        setTimeout(() => {
             console.log('--------start again');
             arguments.callee(server);
         }, 10000);
