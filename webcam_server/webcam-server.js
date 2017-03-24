@@ -16,8 +16,8 @@ firebase.initializeApp({
     storageBucket: "interactive-board-999c5.appspot.com"
 });
 
-var socketServer,
-    streamServer,
+var socketServer = null,
+    streamServer = null,
     streamPort,
     websocketPort,
     streamOpen = false;
@@ -31,6 +31,10 @@ firebase.database().ref('/server').on('value', function(payload) {
     websocketPort = payload.val().websocketPort;
 
     // Websocket Server
+    if (socketServer !== null) {
+        socketServer.close();
+    }
+
     socketServer = new WebSocket.Server({port: websocketPort, perMessageDeflate: false});
     socketServer.connectionCount = 0;
     socketServer.on('connection', function(socket) {
@@ -59,6 +63,10 @@ firebase.database().ref('/server').on('value', function(payload) {
     };
 
     // HTTP Server to accept incomming MPEG-TS Stream from ffmpeg
+    if (streamServer !== null) {
+        streamServer.close();
+    }
+
     streamServer = http.createServer( function(request, response) {
         var params = request.url.substr(1).split('/');
 
