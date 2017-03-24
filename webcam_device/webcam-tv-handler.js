@@ -16,10 +16,10 @@ firebase.initializeApp({
 let streamOpen = false;
 
 firebase.database().ref('/server').on('value', server => {
-    startWebcam();
+    startWebcam(server);
 });
 
-function startWebcam() {
+function startWebcam(server) {
     console.log('--------startWebcam');
     webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
         if (error !== null) {
