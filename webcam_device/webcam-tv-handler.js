@@ -19,6 +19,9 @@ firebase.database().ref('/server').once('value', server => {
     if (timeout !== null) {
         clearTimeout(timeout);
     }
+    if (webcamExec !== null) {
+        webcamExec.stdin.write('q');
+    }
     startWebcam(server);
 });
 
