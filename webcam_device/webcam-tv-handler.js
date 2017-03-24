@@ -11,25 +11,28 @@ firebase.initializeApp({
     storageBucket: "interactive-board-999c5.appspot.com"
 });
 
-let webcamExec = null;
-let interval = null;
+// let webcamExec = null;
+// let interval = null;
 let streamOpen = false;
 
-// firebase.database().ref('/server').on('value', server => {
-//     if (interval) {
-//         clearInterval(interval);
-//     }
-//     interval = setInterval(() => {
-//         if (streamOpen && webcamExec === null) {
-//             webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
-//                 if (error !== null) {
-//                     console.log('exec error: ' + error);
-//                 }
-//                 webcamExec = null;
-//             });
-//         }
-//     }, 60000);
-// });
+firebase.database().ref('/server').on('value', server => {
+    startWebcam();
+});
+
+function startWebcam() {
+    console.log('--------startWebcam');
+    webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+        console.log('--------setTimeout');
+        setTimeOut(() => {
+            console.log('--------start again');
+            startWebcam();
+        }, 10000);
+    });
+}
+
 
 firebase.database().ref('/streamOpen').on('value', payload => {
     streamOpen = payload.val() === true ? true : false;
@@ -50,23 +53,23 @@ firebase.database().ref('/streamOpen').on('value', payload => {
         }
     });
 
-    firebase.database().ref('/server').on('value', server => {
-        if (streamOpen && webcamExec === null) {
-            console.log('------------------start stream');
-            webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
-                if (error !== null) {
-                    console.log('exec error: ' + error);
-                }
-                webcamExec = null;
-                console.log('---------------end of stream');
-            });
-        }
-        if (!streamOpen && webcamExec !== null) {
-            webcamExec.kill();
-            webcamExec = null;
-            console.log('------------------kill stream');
-        }
-    });
+    // firebase.database().ref('/server').on('value', server => {
+    //     if (streamOpen && webcamExec === null) {
+    //         console.log('------------------start stream');
+    //         webcamExec = exec('ffmpeg -r 25 -f video4linux2 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 http://' + server.val().ip + ':' + server.val().streamPort + '/' + streamSecret + ' > ' + __dirname + '/webcam.log', (error, stdout, stderr) => {
+    //             if (error !== null) {
+    //                 console.log('exec error: ' + error);
+    //             }
+    //             webcamExec = null;
+    //             console.log('---------------end of stream');
+    //         });
+    //     }
+    //     if (!streamOpen && webcamExec !== null) {
+    //         webcamExec.kill();
+    //         webcamExec = null;
+    //         console.log('------------------kill stream');
+    //     }
+    // });
 });
 
 function turnTv (newStatus) {
