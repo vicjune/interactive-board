@@ -16,3 +16,24 @@
 .offlineMessage {
     text-align: center;
 }
+
+.ileotechLogo {
+    display: block;
+    position: absolute;
+    width: 10%;
+    bottom: 5%;
+    right: 0;
+    z-index: 1;
+}
+
+.ileotechLogo svg {
+    width: 100%;
+}
+
+.cls-1 {
+    fill: rgba(150, 150, 150, 1);
+}
+
+.cls-2 {
+    fill: rgba(20, 20, 20, 1);
+}

@@ -3,8 +3,6 @@
     font-family: 'Roboto', sans-serif;
     height: 100vh;
     width: 100%;
-    padding: 40px 20px;
-    overflow: auto;
 }
 
 .error {
@@ -26,6 +24,14 @@
     opacity: 1;
 }
 
+.consoleContent {
+    display: flex;
+    flex-direction: column;
+    padding: 40px 20px;
+    height: 100%;
+    overflow: auto;
+}
+
 .voteMessage {
     color: #4c91ff;
     margin-bottom: 20px;
@@ -36,6 +42,9 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    flex-basis: auto;
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .letterItem {
@@ -112,8 +121,32 @@
     line-height: 15px;
 }
 
+.stream {
+    margin-bottom: 40px;
+}
+
+.createdBy {
+    text-align: center;
+    font-size: 12px;
+    color: rgba(150, 150, 150, 1);
+    margin-top: auto;
+}
+
+.createdBy--link {
+    color: rgba(50, 50, 50, 1);
+    text-decoration: none;
+}
+
+.createdBy--link:hover {
+    text-decoration: underline;
+}
+
 @media (orientation:portrait) {
     .console {
+        height: auto;
+    }
+
+    .consoleContent {
         height: auto;
     }
 

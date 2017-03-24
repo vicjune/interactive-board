@@ -2,4 +2,7 @@
     <canvas #canvas class="canvas" [ngClass]="{'started': jsmpegPlayer && jsmpegPlayer.currentTime > 0 && openingHours}"></canvas>
     <div class="offlineMessage" *ngIf="!offline && !loading">Look at the result in our offices :)</div>
     <div class="offlineMessage" *ngIf="offline && !loading">{{openingHours ? 'The stream seems offline :/' : 'The stream will be back at offices hours'}}</div>
+    <a class="ileotechLogo" *ngIf="!loading && jsmpegPlayer && jsmpegPlayer.currentTime > 0 && openingHours" target="_blank" href="http://www.ileotech.com/">
+        <svg ng-class="color" class="logo--wrapper black" id="logosvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9.37 11.45"><polygon ng-class="color" class="cls-1 black" points="2 6.73 4.57 6.73 2.5 3.5 1.3 5.61 2 6.73"></polygon><polygon ng-class="color" class="cls-1 black" points="2.1 0 0.91 1.94 8.45 1.94 7.28 0 2.1 0"></polygon><polygon ng-class="color" class="cls-2 black" points="2.1 0 0 3.52 1.3 5.63 4.52 0 2.1 0"></polygon><polygon ng-class="color" class="cls-2 black" points="9.37 3.52 7.27 0 4.85 0 6.94 3.52 3.52 9.34 4.75 11.45 9.37 3.52"></polygon></svg>
+    </a>
 </div>
